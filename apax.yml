@@ -1,0 +1,45 @@
+# General information
+name: "@simatic-ax/actuators"
+version: 0.0.0-placeholder
+author: Siemens AG
+# Description will be displayed in the apax extension
+description: <add your description here, which will be shown in the apax extension>
+type: lib
+#URL to the repository
+repository:
+  type: git
+  url: https://github.com/simatic-ax/actuators
+# Targets which will be compiled with 'apax build'
+targets:
+  - "1500"
+  - "llvm"
+
+# Registry information, to other npm-registries where Apax packages are located
+registries:
+  '@simatic-ax': 'https://npm.pkg.github.com/'
+# Install settings
+installStrategy: strict
+apaxVersion: 3.4.2
+# Dependencies
+devDependencies:
+  '@ax/sdk': 2411.2.0
+  "@simatic-ax/snippetscollection": 1.0.0
+  "@ax/st-lang-contrib-library-toolbox": ^0.21.1
+
+# Project variables
+variables:
+  APAX_BUILD_ARGS:
+    - '--debug'
+
+# Files, which will be shipped with the library
+files:
+  - 'README.md'
+  - 'LICENSE.md'
+  - 'docs'
+  - 'src'
+  - 'snippets'
+dependencies:
+  "@simatic-ax/io": ^8.0.0
+  "@simatic-ax/commands": ^1.0.0
+catalogs:
+  "@ax/simatic-ax": ^2411.0.0
