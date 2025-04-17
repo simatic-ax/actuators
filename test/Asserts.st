@@ -19,7 +19,7 @@ NAMESPACE AxUnit.Assert
         IF expected = actual THEN
             axunit_Succeed();
         ELSE
-            messageStr := Concat('Expected = ', expected, 'Actual = ', actual);
+            messageStr := Concat('Expected = ', expected, ' Actual = ', actual);
             axunit_Fail(messageStr, file, line);
         END_IF;
         Equal(expected := TRUE, actual := expected = actual);

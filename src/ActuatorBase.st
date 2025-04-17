@@ -1,5 +1,6 @@
 USING Simatic.Ax.Commands;
 USING Simatic.Ax.AutomationFramework;
+USING System.Strings;
 
 NAMESPACE Simatic.Ax.Actuators
 
@@ -16,6 +17,7 @@ NAMESPACE Simatic.Ax.Actuators
             Q_ToWorkPosition : itfPositionControl;  // Command to move the actuator to the work position.
             TMonToWorkPosition : LTIME := T#5s; // Monitoring time for moving to the work position. Default: 5 seconds.
             TMonToHomePosition : LTIME := T#5s; // Monitoring time for moving to the home position. Default: 5 seconds.
+            Logger : itfLogger; // Logger for the actuator states
         END_VAR
 
         // Private variables
@@ -34,8 +36,6 @@ NAMESPACE Simatic.Ax.Actuators
 
         // Executes type-specific logic for the actuator.
         METHOD PROTECTED OVERRIDE _executeTypeSpecific
-            _stateHasChanged := _currentState <> _stateOld;
-            _stateOld := _currentState;
             IF (_simFeedbackHomePos) THEN
                 _binSignalHomePosNull.ReadCyclic();
                 ;
@@ -89,9 +89,9 @@ NAMESPACE Simatic.Ax.Actuators
                 THIS._initmethod();
             END_IF;
             IF (I_InHomePosition.HasReached()) THEN
-                _currentState := ActuatorState#InHomePosition;
+                THIS.ChangeState(ActuatorState#InHomePosition);
             ELSE
-                _currentState := ActuatorState#MoveToHomePosition;
+                THIS.ChangeState(ActuatorState#MoveToHomePosition);
             END_IF;
             GoToHomePosition := THIS;
             ;
@@ -104,9 +104,9 @@ NAMESPACE Simatic.Ax.Actuators
                 THIS._initmethod();
             END_IF;
             IF (I_InWorkPosition.IsActivated()) THEN
-                _currentState := ActuatorState#InWorkPosition;
+                THIS.ChangeState(ActuatorState#InWorkPosition);
             ELSE
-                _currentState := ActuatorState#MoveToWorkPosition;
+                THIS.ChangeState(ActuatorState#MoveToWorkPosition);
             END_IF;
             GoToWorkPosition := THIS;
         END_METHOD
@@ -123,11 +123,21 @@ NAMESPACE Simatic.Ax.Actuators
         END_METHOD
 
         // Changes the current state of the actuator.
-        METHOD PROTECTED ChangeState
+        METHOD PROTECTED ChangeState : BOOL
             VAR_INPUT
                 NewState : ActuatorState; // The new state to set for the actuator.
             END_VAR
+            VAR_TEMP
+                msg : STRING;
+            END_VAR
             _currentState := NewState;
+            _stateHasChanged := _currentState <> _stateOld;
+            _stateOld := _currentState;
+            IF (_stateHasChanged AND Logger <> NULL) THEN 
+                msg := Concat('State changed to ', ToString(_currentState));
+                Logger.WriteLog(msg, LogLevel#Info);
+            END_IF;
+            ChangeState := _stateHasChanged;
         END_METHOD
     END_CLASS
 

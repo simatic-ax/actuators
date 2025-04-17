@@ -70,17 +70,18 @@ NAMESPACE Simatic.Ax.Actuators
                 // MoveToWorkPosition
                 //##############################################
                 ActuatorState#MoveToWorkPosition:
-                    IF (I_InWorkPosition.IsActivated()) THEN
-                        Q_ToWorkPosition.Hold();
-                        THIS.SetDone();
-                        THIS.ChangeState(ActuatorState#InWorkPosition);
-                    END_IF;
                     IF (THIS.StateHasChanged()) THEN
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Set();
                         Q_ToWorkPosition2.Reset();
                         I_InWorkPosition.StartMonitoring();
                     END_IF;
+                    IF (I_InWorkPosition.IsActivated()) THEN
+                        Q_ToWorkPosition.Hold();
+                        THIS.SetDone();
+                        THIS.ChangeState(ActuatorState#InWorkPosition);
+                    END_IF;
+
                 //##############################################
                 // InWorkPosition
                 //##############################################
@@ -92,17 +93,17 @@ NAMESPACE Simatic.Ax.Actuators
                 // MoveToWorkPosition
                 //##############################################
                 ActuatorState#MoveToWorkPosition2:
-                    IF (I_InWorkPosition2.IsActivated()) THEN
-                        Q_ToWorkPosition2.Hold();
-                        THIS.SetDone();
-                        THIS.ChangeState(ActuatorState#InWorkPosition2);
-                    END_IF;
                     IF (THIS.StateHasChanged()) THEN
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Set();
                         I_InWorkPosition2.StartMonitoring();
-                    END_IF;                    
+                    END_IF;   
+                    IF (I_InWorkPosition2.IsActivated()) THEN
+                        Q_ToWorkPosition2.Hold();
+                        THIS.SetDone();
+                        THIS.ChangeState(ActuatorState#InWorkPosition2);
+                    END_IF;                 
                 //##############################################
                 // InWorkPosition2
                 //##############################################
@@ -114,16 +115,16 @@ NAMESPACE Simatic.Ax.Actuators
                 // Move to home position
                 //##############################################
                 ActuatorState#MoveToHomePosition:
-                    IF (I_InHomePosition.IsActivated()) THEN
-                        Q_ToHomePosition.Hold();
-                        THIS.SetDone();
-                        THIS.ChangeState(ActuatorState#InHomePosition);
-                    END_IF;
                     IF (THIS.StateHasChanged()) THEN
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Reset();
                         I_InHomePosition.StartMonitoring();
+                    END_IF;
+                    IF (I_InHomePosition.IsActivated()) THEN
+                        Q_ToHomePosition.Hold();
+                        THIS.SetDone();
+                        THIS.ChangeState(ActuatorState#InHomePosition);
                     END_IF;
                 ActuatorState#Error:
                     ;
