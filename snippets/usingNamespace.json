@@ -1,9 +1,9 @@
 {
     "USINGAxUnit": {
     "scope": "javascript,typescript,st",
-    "prefix": ["USING <Library>"],
+    "prefix": ["USING Actuators"],
     "body": [
-        "USING Simatic.Ax.<Library>;",
+        "USING Simatic.Ax.Actuators;",
         "$0"
     ],
     "description": "Create USING for your library;"
