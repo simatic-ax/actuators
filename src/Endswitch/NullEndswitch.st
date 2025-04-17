@@ -1,4 +1,3 @@
-USING Simatic.Ax.IO.Input;
 USING System.Timer;
 
 NAMESPACE Simatic.Ax.Actuators    

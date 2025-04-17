@@ -1,6 +1,5 @@
 USING Simatic.Ax.Commands;
 USING System.Timer;
-USING Simatic.Ax.Io.Output;
 USING Simatic.Ax.AutomationFramework;
 
 NAMESPACE Simatic.Ax.Actuators

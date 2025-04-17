@@ -1,5 +1,4 @@
 USING Simatic.Ax.Commands;
-USING Simatic.Ax.IO.Output;
 USING Simatic.Ax.AutomationFramework;
 
 NAMESPACE Simatic.Ax.Actuators

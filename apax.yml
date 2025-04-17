@@ -24,7 +24,6 @@ apaxVersion: 3.4.2
 devDependencies:
   '@ax/sdk': 2411.2.0
   "@simatic-ax/snippetscollection": 1.0.0
-  "@ax/st-lang-contrib-library-toolbox": ^0.21.1
 
 # Project variables
 variables:
@@ -41,5 +40,6 @@ files:
 dependencies:
   "@simatic-ax/io": ^8.0.0
   "@simatic-ax/commands": ^1.0.0
+  "@ax/system-timer": ^8.0.7
 catalogs:
   "@ax/simatic-ax": ^2411.0.0

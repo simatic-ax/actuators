@@ -1,6 +1,5 @@
-USING Simatic.Ax.IO.Input;
 USING System.Timer;
-
+USING Simatic.Ax.IO.Input;
 NAMESPACE Simatic.Ax.Actuators    
     // Class representing an endswitch, implementing the ItfEndswitch interface.
     CLASS Endswitch IMPLEMENTS itfEndswitch

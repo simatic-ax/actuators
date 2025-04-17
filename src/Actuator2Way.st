@@ -1,6 +1,3 @@
-USING Simatic.Ax.IO.Input;
-USING Simatic.Ax.IO.Output;
-
 NAMESPACE Simatic.Ax.Actuators
 
     // Represents a 2-way actuator that can move between two positions: Home and Work.

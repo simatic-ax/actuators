@@ -8,12 +8,12 @@
     "version": "0.0.0-placeholder",
     "dependencies": {
       "@simatic-ax/io": "^8.0.0",
-      "@simatic-ax/commands": "^1.0.0"
+      "@simatic-ax/commands": "^1.0.0",
+      "@ax/system-timer": "^8.0.7"
     },
     "devDependencies": {
       "@ax/sdk": "2411.2.0",
-      "@simatic-ax/snippetscollection": "1.0.0",
-      "@ax/st-lang-contrib-library-toolbox": "^0.21.1"
+      "@simatic-ax/snippetscollection": "1.0.0"
     },
     "catalogs": {
       "@ax/simatic-ax": "^2411.0.0"
@@ -50,18 +50,18 @@
         "@ax/trace": "2.9.0"
       }
     },
+    "@ax/system-timer": {
+      "name": "@ax/system-timer",
+      "version": "8.0.8",
+      "integrity": "sha512-M7IfUUDTLDzc8m3DfxtRE2+RXTdbc1fa53OT+OxPJctLjYE487exHjbZMsV4DwWaJDIL1G0DRTlUf39XCY/k/Q==",
+      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-timer/-/system-timer-8.0.8.tgz",
+      "dependencies": {}
+    },
     "@simatic-ax/snippetscollection": {
       "name": "@simatic-ax/snippetscollection",
       "version": "1.0.0",
       "integrity": "sha512-8BNldIIGZuuLSiMjJxcBmHt7sL7kSlc0dss88BcrfnL/7iXPmHwhlnh4XobcVoOHXaz5f8cbMbXCUrffBIwecQ==",
       "resolved": "https://npm.pkg.github.com/download/@simatic-ax/snippetscollection/1.0.0/60302d7e0da15a914ce0126503398063a42e1917",
-      "dependencies": {}
-    },
-    "@ax/st-lang-contrib-library-toolbox": {
-      "name": "@ax/st-lang-contrib-library-toolbox",
-      "version": "0.21.1",
-      "integrity": "sha512-lkDfz3TwcG9k6N44XcrSOzh86d2KqLV8SiWa8cB2pgpIs2t8wXb+HFmUCovzmDIJ5gSuMx1UNHGeDT6GSjbRhQ==",
-      "resolved": "https://registry.simatic-ax.siemens.io/@ax/st-lang-contrib-library-toolbox/-/st-lang-contrib-library-toolbox-0.21.1.tgz",
       "dependencies": {}
     },
     "@simatic-ax/io": {
@@ -290,13 +290,6 @@
       "version": "8.0.8",
       "integrity": "sha512-CLt843KtDUwGFXT6/xxNKqFZ7l4u6CL4qCNIC/IpYa6lKtMFAUO9w+VGiPQbsNoM8wt8j7gjSseJqRj1tKV4Xw==",
       "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-math/-/system-math-8.0.8.tgz",
-      "dependencies": {}
-    },
-    "@ax/system-timer": {
-      "name": "@ax/system-timer",
-      "version": "8.0.8",
-      "integrity": "sha512-M7IfUUDTLDzc8m3DfxtRE2+RXTdbc1fa53OT+OxPJctLjYE487exHjbZMsV4DwWaJDIL1G0DRTlUf39XCY/k/Q==",
-      "resolved": "https://registry.simatic-ax.siemens.io/@ax/system-timer/-/system-timer-8.0.8.tgz",
       "dependencies": {}
     },
     "@ax/axunitst-library": {
