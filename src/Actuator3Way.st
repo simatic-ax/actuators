@@ -70,13 +70,13 @@ NAMESPACE Simatic.Ax.Actuators
                 // MoveToWorkPosition
                 //##############################################
                 ActuatorState#MoveToWorkPosition:
-                    IF (THIS.StateHasChanged()) THEN
+                    IF (THIS.StateHasChanged() AND NOT(_isInWorkPos)) THEN
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Set();
                         Q_ToWorkPosition2.Reset();
                         I_InWorkPosition.StartMonitoring();
                     END_IF;
-                    IF (I_InWorkPosition.IsActivated()) THEN
+                    IF (_isInWorkPos) THEN
                         Q_ToWorkPosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -93,13 +93,13 @@ NAMESPACE Simatic.Ax.Actuators
                 // MoveToWorkPosition
                 //##############################################
                 ActuatorState#MoveToWorkPosition2:
-                    IF (THIS.StateHasChanged()) THEN
+                    IF (THIS.StateHasChanged() AND NOT (_isInWorkPos2)) THEN
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Set();
                         I_InWorkPosition2.StartMonitoring();
                     END_IF;   
-                    IF (I_InWorkPosition2.IsActivated()) THEN
+                    IF (_isInWorkPos2) THEN
                         Q_ToWorkPosition2.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition2);
@@ -115,13 +115,13 @@ NAMESPACE Simatic.Ax.Actuators
                 // Move to home position
                 //##############################################
                 ActuatorState#MoveToHomePosition:
-                    IF (THIS.StateHasChanged()) THEN
+                    IF (THIS.StateHasChanged() AND NOT(_isInHomePos)) THEN
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Reset();
                         I_InHomePosition.StartMonitoring();
                     END_IF;
-                    IF (I_InHomePosition.IsActivated()) THEN
+                    IF (_isInHomePos) THEN
                         Q_ToHomePosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InHomePosition);

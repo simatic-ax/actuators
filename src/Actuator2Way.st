@@ -27,8 +27,9 @@ NAMESPACE Simatic.Ax.Actuators
 
             // Read sensor states.
             _isInHomePos := I_InHomePosition.IsActivated();
-            _currentState := THIS.GetState();
             _isInWorkPos := I_InWorkPosition.IsActivated();
+            _currentState := THIS.GetState();
+            
 
             // Handle state transitions based on the current state.
             CASE _currentState OF
@@ -58,12 +59,12 @@ NAMESPACE Simatic.Ax.Actuators
                 // Move to Work position: Transition to work position.
                 //##############################################
                 ActuatorState#MoveToWorkPosition:
-                    IF THIS.StateHasChanged() THEN
+                    IF THIS.StateHasChanged()  AND NOT(_isInWorkPos) THEN
                         Q_ToWorkPosition.Set();
                         Q_ToHomePosition.Reset();
                         I_InWorkPosition.StartMonitoring(TMonToWorkPosition);
                     END_IF;
-                    IF (I_InWorkPosition.IsActivated()) THEN
+                    IF (_isInWorkPos) THEN
                         THIS.SetDone();
                         Q_ToWorkPosition.Hold();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -80,12 +81,12 @@ NAMESPACE Simatic.Ax.Actuators
                 // Move to Home position: Transition to home position.
                 //##############################################
                 ActuatorState#MoveToHomePosition:
-                    IF (THIS.StateHasChanged()) THEN
+                    IF (THIS.StateHasChanged() aND NOT(_isInHomePos)) THEN
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         I_InHomePosition.StartMonitoring(TMonToHomePosition);
                     END_IF;
-                    IF (I_InHomePosition.IsActivated()) THEN
+                    IF (_isInHomePos) THEN
                         THIS.ChangeState(ActuatorState#InHomePosition);
                         Q_ToHomePosition.Hold();
                         THIS.SetDone();
