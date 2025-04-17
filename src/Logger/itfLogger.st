@@ -16,6 +16,8 @@ NAMESPACE Simatic.Ax.Actuators
             END_VAR
             
         END_METHOD
+        METHOD Capacity : DINT
+        END_METHOD
     END_INTERFACE
 
     TYPE

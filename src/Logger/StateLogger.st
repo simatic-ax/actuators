@@ -10,7 +10,7 @@ NAMESPACE Simatic.Ax.Actuators
         VAR PRIVATE
             _pos : DINT;
             _ll, _ul : DINT := -1;
-            _size : DINT;
+            _capacity : DINT;
             _enabledLoglevel : LogLevel;
         END_VAR
 
@@ -18,7 +18,8 @@ NAMESPACE Simatic.Ax.Actuators
             IF (MsgBuffer <> NULL) THEN
                 _ll := LOWER_BOUND(MsgBuffer^, 1);
                 _ul := UPPER_BOUND(MsgBuffer^, 1);
-                _size := _ul - _ll + 1;
+                _capacity := _ul - _ll + 1;
+                _pos := _ll;
             END_IF;
         END_METHOD
 
@@ -51,6 +52,10 @@ NAMESPACE Simatic.Ax.Actuators
                 loglevel : LogLevel;
             END_VAR
             ;
+        END_METHOD
+    
+        METHOD PUBLIC Capacity : DINT
+            Capacity := _capacity;
         END_METHOD
     END_CLASS
 
