@@ -2,12 +2,14 @@ USING Simatic.Ax.Actuators;
 USING System.Strings;
 USING AxUnit.ResultFunctions;
 
+// AxUnit.Assert.Equal(actual : BOOL, expected : BOOL, messageOnFail : STRING, file : WSTRING, line : INT)
 NAMESPACE AxUnit.Assert
 
     FUNCTION Equal
         VAR_INPUT
             expected : PlcOpen;
             actual : PlcOpen;
+            messageOnFail : STRING;
             {CallerFilePath}
             file : WSTRING[1024];
             {CallerLineNumber}

@@ -66,7 +66,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator is in the MoveToWorkPosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             // Step 4: Check the actuator outputs.
@@ -80,7 +80,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 6: Verify the actuator has reached the work position.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InWorkPosition, actual := _actuator.GetState());
 
             // Step 7: Check the actuator outputs again.
@@ -106,7 +106,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator remains in the InWorkPosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InWorkPosition, actual := _actuator.GetState());
         END_METHOD
 
@@ -126,7 +126,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator is in the MoveToHomePosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToHomePosition, actual := _actuator.GetState());
 
             // Step 4: Check the actuator outputs.
@@ -140,7 +140,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 6: Verify the actuator has reached the home position.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InHomePosition, actual := _actuator.GetState());
 
             // Step 7: Check the actuator outputs again.
@@ -166,7 +166,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator remains in the InHomePosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InHomePosition, actual := _actuator.GetState());
         END_METHOD
         
@@ -184,17 +184,17 @@ NAMESPACE Simatic.Ax.Actuators
             // Step 2: Issue the command to move to work position multiple times.
             _cmd := _actuator.GoToWorkPosition();
             _plcOpenState := Await(_cmd);
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             _cmd := _actuator.GoToWorkPosition();
             _plcOpenState := Await(_cmd);
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             _cmd := _actuator.GoToWorkPosition();
             _plcOpenState := Await(_cmd);
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             // Step 3: Simulate reaching the work position.
@@ -202,7 +202,7 @@ NAMESPACE Simatic.Ax.Actuators
             _cmd := _actuator.GoToWorkPosition();
             Equal(expected := ActuatorState#InWorkPosition, actual := _actuator.GetState());
             _plcOpenState := Await(_cmd);
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InWorkPosition, actual := _actuator.GetState());
         END_METHOD
 
@@ -222,7 +222,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator is in the MoveToWorkPosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             // Step 4: Check the actuator outputs.
@@ -236,7 +236,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 6: Verify the actuator is in the MoveToHomePosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToHomePosition, actual := _actuator.GetState());
 
             // Step 7: Check the actuator outputs.
@@ -250,7 +250,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 9: Verify the actuator has reached the home position.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InHomePosition, actual := _actuator.GetState());
 
             // Step 10: Check the actuator outputs again.
@@ -276,7 +276,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 3: Verify the actuator is in the MoveToHomePosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToHomePosition, actual := _actuator.GetState());
 
             // Step 4: Check the actuator outputs.
@@ -290,7 +290,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 6: Verify the actuator is in the MoveToWorkPosition state.
-            AxUnit.Assert.Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Busy, actual := _plcOpenState);
             Equal(expected := ActuatorState#MoveToWorkPosition, actual := _actuator.GetState());
 
             // Step 7: Check the actuator outputs.
@@ -304,7 +304,7 @@ NAMESPACE Simatic.Ax.Actuators
             _plcOpenState := Await(_cmd);
 
             // Step 9: Verify the actuator has reached the work position.
-            AxUnit.Assert.Equal(expected := PlcOpen#Done, actual := _plcOpenState);
+            Equal(expected := PlcOpen#Done, actual := _plcOpenState);
             Equal(expected := ActuatorState#InWorkPosition, actual := _actuator.GetState());
 
             // Step 10: Check the actuator outputs again.

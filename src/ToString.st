@@ -1,6 +1,6 @@
 NAMESPACE Simatic.Ax.Actuators
 
-    FUNCTION INTERNAL ToString : STRING
+    FUNCTION ToString : STRING
         VAR_INPUT
             val : ActuatorState;
         END_VAR
