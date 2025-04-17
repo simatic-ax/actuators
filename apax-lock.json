@@ -8,7 +8,7 @@
     "version": "0.0.0-placeholder",
     "dependencies": {
       "@simatic-ax/io": "^8.0.0",
-      "@simatic-ax/commands": "^1.0.0",
+      "@simatic-ax/commands": "^2.0.0",
       "@ax/system-timer": "^8.0.7"
     },
     "devDependencies": {
@@ -76,9 +76,9 @@
     },
     "@simatic-ax/commands": {
       "name": "@simatic-ax/commands",
-      "version": "1.0.0",
-      "integrity": "sha512-gswlRfdCNdlR7XCMmz2LsL1954t3y16oNTCuU+dvXV2PeezfsmEC6laXpoCt2juZtIwQkQSS3MstAM9lG3WLOA==",
-      "resolved": "https://npm.pkg.github.com/download/@simatic-ax/commands/1.0.0/a5ef0dd9beee71acb9582de8ec45342b5acb8765",
+      "version": "2.0.0",
+      "integrity": "sha512-a7UZpf541ma3eKHhTL+RAr2M+7py1aFyD2sctaxWBrCgLm6E99KG+NtlwQR9tAtAcgv3cfbancGqOJxxlYHHBQ==",
+      "resolved": "https://npm.pkg.github.com/download/@simatic-ax/commands/2.0.0/fe165e94242dc1441bef39d77192056604a82d0c",
       "dependencies": {}
     },
     "@ax/apax-build": {

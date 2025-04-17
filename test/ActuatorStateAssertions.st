@@ -8,7 +8,6 @@ NAMESPACE AxUnit.Assert
         VAR_INPUT
             expected : ActuatorState;
             actual : ActuatorState;
-            messageOnFail : STRING;
             {CallerFilePath}
             file : WSTRING[1024];
             {CallerLineNumber}

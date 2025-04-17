@@ -39,7 +39,7 @@ files:
   - 'snippets'
 dependencies:
   "@simatic-ax/io": ^8.0.0
-  "@simatic-ax/commands": ^1.0.0
+  "@simatic-ax/commands": ^2.0.0
   "@ax/system-timer": ^8.0.7
 catalogs:
   "@ax/simatic-ax": ^2411.0.0

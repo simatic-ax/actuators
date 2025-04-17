@@ -1,15 +1,14 @@
-USING Simatic.Ax.Actuators;
+USING Simatic.Ax.Commands;
 USING System.Strings;
 USING AxUnit.ResultFunctions;
 
-// AxUnit.Assert.Equal(actual : BOOL, expected : BOOL, messageOnFail : STRING, file : WSTRING, line : INT)
+
 NAMESPACE AxUnit.Assert
 
     FUNCTION Equal
         VAR_INPUT
             expected : PlcOpen;
             actual : PlcOpen;
-            messageOnFail : STRING;
             {CallerFilePath}
             file : WSTRING[1024];
             {CallerLineNumber}
@@ -49,31 +48,6 @@ NAMESPACE AxUnit.Assert
             axunit_Fail(messageStr, file, line);
         END_IF;
         Equal(expected := TRUE, actual := expected <> actual);
-        ;
-    END_FUNCTION
-
-    FUNCTION ToString : STRING
-        VAR_INPUT
-            val : PlcOpen;
-        END_VAR
-        CASE val OF
-            PlcOpen#Undefined :
-                ToString := 'Undefined';
-                RETURN;
-            PlcOpen#Busy :
-            ToString := 'Busy';
-            RETURN;
-            PlcOpen#Done :
-            ToString := 'Done';
-            RETURN;
-            PlcOpen#Error :
-            ToString := 'Error';
-            RETURN;
-            PlcOpen#Aborted :
-            ToString := 'Aborted';
-            RETURN;
-           
-        END_CASE;
         ;
     END_FUNCTION
 
