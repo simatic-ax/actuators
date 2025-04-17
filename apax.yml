@@ -41,5 +41,6 @@ dependencies:
   "@simatic-ax/io": ^8.0.0
   "@simatic-ax/commands": ^2.0.0
   "@ax/system-timer": ^8.0.7
+  "@simatic-ax/conversion": ^2411.0.0
 catalogs:
-  "@ax/simatic-ax": ^2411.0.0
+  "@ax/simatic-ax": 2411.2.0
