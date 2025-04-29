@@ -4,7 +4,7 @@ NAMESPACE Simatic.Ax.AutomationFramework
     
     ///Provides basic functionality for programming on a plc
     /// has acces to the protected Methods and "Contructors" of the classes
-    CLASS ABSTRACT ExecuteControlModuleAbstract EXTENDS ExecuteCommand
+    CLASS ABSTRACT ExecuteControlModuleAbstract EXTENDS Command
         VAR PROTECTED
             _init : BOOL;
             _hasError : BOOL;
@@ -18,17 +18,6 @@ NAMESPACE Simatic.Ax.AutomationFramework
                 _init := TRUE;
             END_IF;
            THIS._executeTypeSpecific();
-            ;
-        END_METHOD
-
-        METHOD PROTECTED OVERRIDE SetExecute
-            VAR_INPUT
-                exec : BOOL;
-            END_VAR
-            _exec := exec;
-            IF (_exec) THEN
-                THIS.InitState();
-            END_IF;
             ;
         END_METHOD
 
