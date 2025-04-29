@@ -7,9 +7,6 @@ NAMESPACE Simatic.Ax.AutomationFramework
     CLASS ABSTRACT ExecuteControlModuleAbstract EXTENDS Command
         VAR PROTECTED
             _init : BOOL;
-            _hasError : BOOL;
-            _errorState : WORD;
-            _exec : BOOL;
         END_VAR
         
         METHOD PROTECTED OVERRIDE Execute
@@ -27,11 +24,6 @@ NAMESPACE Simatic.Ax.AutomationFramework
 
         METHOD PROTECTED ABSTRACT _initmethod
             
-        END_METHOD
-
-
-        METHOD PUBLIC GetErrorStatus : WORD
-            GetErrorStatus := _errorState;
         END_METHOD
 
     END_CLASS

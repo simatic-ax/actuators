@@ -1,4 +1,5 @@
 USING Simatic.Ax.Commands;
+USING Simatic.Ax.Commands;
 
 NAMESPACE Simatic.Ax.Actuators
 
@@ -14,6 +15,10 @@ NAMESPACE Simatic.Ax.Actuators
 
         // Command to move the actuator to the second work position.
         METHOD GoToWorkPosition2 : itfCommand
+        END_METHOD
+
+        // Command to reset the actuator
+        METHOD Reset
         END_METHOD
 
         // Retrieves the current state of the actuator.

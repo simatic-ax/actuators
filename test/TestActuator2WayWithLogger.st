@@ -77,6 +77,7 @@ NAMESPACE Simatic.Ax.Actuators
 
             // Step 8: Simulate reaching the home position.
             _actuator.I_InHomePosition := _sensorHasReached;
+            _actuator.I_InWorkPosition := _sensorNotActivated;
             _plcOpenState := Await(_cmd);
 
             // Step 9: Verify the log entry for reaching InHomePosition.

@@ -15,6 +15,9 @@ NAMESPACE Simatic.Ax.Actuators
             _ActualPosition : INT;
             _binSignalWorkPos2Null : NullEndswitch;
             _outSignalWhenNull : NullPositionControl;
+            _timeoutHomePosNotReached : BOOL;
+            _timeoutWorkPosNotReached : BOOL;
+            _timeoutWorkPos2NotReached : BOOL;
         END_VAR
 
         METHOD PROTECTED OVERRIDE InitActuator
@@ -40,6 +43,15 @@ NAMESPACE Simatic.Ax.Actuators
             _isInHomePos := I_InHomePosition.IsActivated();
             _isInWorkPos := I_InWorkPosition.IsActivated();
             _isInWorkPos2 := I_InWorkPosition2.IsActivated();
+            _timeoutHomePosNotReached := I_InHomePosition.TimeHasElapsed();
+            _timeoutWorkPosNotReached := I_InWorkPosition.TimeHasElapsed();
+            _timeoutWorkPos2NotReached := I_InWorkPosition2.TimeHasElapsed();
+            
+            IF (_isInHomePos AND _isInWorkPos) OR (_isInHomePos AND _isInWorkPos2) OR (_isInWorkPos AND _isInWorkPos2) THEN 
+                Q_ToWorkPosition.Reset();
+                THIS.SetError(Error#SensorsNotPlausible);
+                THIS.ChangeState(ActuatorState#Error);
+            END_IF;
             _currentState := THIS.GetState();
             CASE _currentState OF
                 //##############################################
@@ -55,9 +67,6 @@ NAMESPACE Simatic.Ax.Actuators
                     // actuator is in any Workpos
                     ELSIF NOT (_isInHomePos) AND (_isInWorkPos OR _isInWorkPos2) THEN
                         THIS.ChangeState(ActuatorState#InWorkPosition);
-                    // both sensors are activated --> undefined state
-                    ELSE
-                        ; // Error
                     END_IF;
                 //##############################################
                 // InHomePosition
@@ -76,7 +85,11 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToWorkPosition2.Reset();
                         I_InWorkPosition.StartMonitoring();
                     END_IF;
-                    IF (_isInWorkPos) THEN
+                    IF (_timeoutWorkPosNotReached) THEN
+                        Q_ToWorkPosition.Reset();
+                        THIS.SetError(Error#WorkPositionNotReached);
+                        THIS.ChangeState(ActuatorState#Error);
+                    ELSIF (_isInWorkPos) THEN
                         Q_ToWorkPosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -99,7 +112,11 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToWorkPosition2.Set();
                         I_InWorkPosition2.StartMonitoring();
                     END_IF;   
-                    IF (_isInWorkPos2) THEN
+                    IF (_timeoutWorkPos2NotReached) THEN
+                        Q_ToWorkPosition.Reset();
+                        THIS.SetError(Error#WorkPosition2NotReached);
+                        THIS.ChangeState(ActuatorState#Error);
+                    ELSIF (_isInWorkPos2) THEN
                         Q_ToWorkPosition2.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition2);
@@ -121,7 +138,11 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToWorkPosition2.Reset();
                         I_InHomePosition.StartMonitoring();
                     END_IF;
-                    IF (_isInHomePos) THEN
+                    IF (_timeoutHomePosNotReached) THEN
+                        Q_ToHomePosition.Reset();
+                        THIS.SetError(Error#HomePositionNotReached);
+                        THIS.ChangeState(ActuatorState#Error);
+                    ELSIF  (_isInHomePos) THEN
                         Q_ToHomePosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InHomePosition);
@@ -132,14 +153,15 @@ NAMESPACE Simatic.Ax.Actuators
         END_METHOD
 
         METHOD PUBLIC OVERRIDE GoToWorkPosition2 : itfCommand
-            THIS.InitState();
             IF (I_InWorkPosition2 = NULL) THEN
                 THIS.InitActuator();
             END_IF;
             IF (I_InWorkPosition2.IsActivated()) THEN
                 THIS.ChangeState(ActuatorState#InWorkPosition2);
+                THIS.InitState();
             ELSE
                 THIS.ChangeState(ActuatorState#MoveToWorkPosition2);
+                THIS.InitState();
             END_IF;
             GoToWorkPosition2 := THIS;
         END_METHOD

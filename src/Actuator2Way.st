@@ -7,6 +7,11 @@ NAMESPACE Simatic.Ax.Actuators
             // Public variables can be declared here if needed.
         END_VAR
 
+        VAR PROTECTED
+            _timeoutHomePosNotReached : BOOL;
+            _timeoutWorkPosNotReached : BOOL;
+        END_VAR
+
         // Initializes the actuator. This method is called during the setup phase.
         METHOD PROTECTED OVERRIDE InitActuator
             ;
@@ -28,9 +33,16 @@ NAMESPACE Simatic.Ax.Actuators
             // Read sensor states.
             _isInHomePos := I_InHomePosition.IsActivated();
             _isInWorkPos := I_InWorkPosition.IsActivated();
+            _timeoutHomePosNotReached := I_InHomePosition.TimeHasElapsed();
+            _timeoutWorkPosNotReached := I_InWorkPosition.TimeHasElapsed();
+            
+            IF (_isInHomePos AND _isInWorkPos) THEN
+                Q_ToWorkPosition.Reset();
+                THIS.SetError(Error#SensorsNotPlausible);
+                THIS.ChangeState(ActuatorState#Error);
+            END_IF;
             _currentState := THIS.GetState();
             
-
             // Handle state transitions based on the current state.
             CASE _currentState OF
                 //##############################################
@@ -44,8 +56,6 @@ NAMESPACE Simatic.Ax.Actuators
                         THIS.ChangeState(ActuatorState#InHomePosition);
                     ELSIF NOT (_isInHomePos) AND (_isInWorkPos) THEN
                         THIS.ChangeState(ActuatorState#InWorkPosition);
-                    ELSE
-                        ; // Error: Both sensors are activated.
                     END_IF;
 
                 //##############################################
@@ -64,7 +74,11 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Reset();
                         I_InWorkPosition.StartMonitoring(TMonToWorkPosition);
                     END_IF;
-                    IF (_isInWorkPos) THEN
+                    IF (_timeoutWorkPosNotReached) THEN
+                        Q_ToWorkPosition.Reset();
+                        THIS.SetError(Error#WorkPositionNotReached);
+                        THIS.ChangeState(ActuatorState#Error);
+                    ELSIF (_isInWorkPos) THEN
                         THIS.SetDone();
                         Q_ToWorkPosition.Hold();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -81,12 +95,16 @@ NAMESPACE Simatic.Ax.Actuators
                 // Move to Home position: Transition to home position.
                 //##############################################
                 ActuatorState#MoveToHomePosition:
-                    IF (THIS.StateHasChanged() aND NOT(_isInHomePos)) THEN
+                    IF (THIS.StateHasChanged() AND NOT(_isInHomePos)) THEN
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         I_InHomePosition.StartMonitoring(TMonToHomePosition);
                     END_IF;
-                    IF (_isInHomePos) THEN
+                    IF (_timeoutHomePosNotReached) THEN
+                        Q_ToHomePosition.Reset();
+                        THIS.SetError(Error#HomePositionNotReached);
+                        THIS.ChangeState(ActuatorState#Error);
+                    ELSIF (_isInHomePos) THEN
                         THIS.ChangeState(ActuatorState#InHomePosition);
                         Q_ToHomePosition.Hold();
                         THIS.SetDone();

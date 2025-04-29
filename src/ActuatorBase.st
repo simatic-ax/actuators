@@ -82,15 +82,25 @@ NAMESPACE Simatic.Ax.Actuators
             GetState := _currentState;
         END_METHOD
 
+        // Command to reset the actuator
+        METHOD PUBLIC Reset
+            IF (_currentState = ActuatorState#Error) THEN
+                THIS.ChangeState(ActuatorState#Undefined);
+                ;
+            END_IF;
+
+        END_METHOD
+
         // Command to move the actuator to the home position.
         METHOD PUBLIC GoToHomePosition : itfCommand
-            THIS.InitState();
             IF (I_InHomePosition = NULL) THEN
                 THIS._initmethod();
             END_IF;
             IF (I_InHomePosition.HasReached()) THEN
+                THIS.InitState();
                 THIS.ChangeState(ActuatorState#InHomePosition);
             ELSE
+                THIS.InitState();
                 THIS.ChangeState(ActuatorState#MoveToHomePosition);
             END_IF;
             GoToHomePosition := THIS;
@@ -99,13 +109,14 @@ NAMESPACE Simatic.Ax.Actuators
 
         // Command to move the actuator to the first work position.
         METHOD PUBLIC GoToWorkPosition : itfCommand
-            THIS.InitState();
             IF (I_InWorkPosition = NULL) THEN
                 THIS._initmethod();
             END_IF;
             IF (I_InWorkPosition.IsActivated()) THEN
+                THIS.InitState();
                 THIS.ChangeState(ActuatorState#InWorkPosition);
             ELSE
+                THIS.InitState();
                 THIS.ChangeState(ActuatorState#MoveToWorkPosition);
             END_IF;
             GoToWorkPosition := THIS;
