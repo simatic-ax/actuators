@@ -22,8 +22,8 @@ installStrategy: strict
 apaxVersion: 3.4.2
 # Dependencies
 devDependencies:
-  '@ax/sdk': 2411.2.0
-  "@simatic-ax/snippetscollection": 1.0.0
+  '@ax/sdk': ^2504.0.0
+  "@simatic-ax/snippetscollection": ^1.0.0
 
 # Project variables
 variables:
@@ -38,8 +38,8 @@ files:
   - 'src'
   - 'snippets'
 dependencies:
-  "@simatic-ax/io": ^8.0.0
-  "@simatic-ax/commands": ^1.0.0
-  "@ax/system-timer": ^8.0.7
+  "@simatic-ax/io": ^9.0.0
+  "@simatic-ax/commands": ^3.0.0
+  "@ax/system-timer": ^10.0.24
 catalogs:
-  "@ax/simatic-ax": ^2411.0.0
+  "@ax/simatic-ax": ^2504.0.0
