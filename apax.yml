@@ -17,13 +17,19 @@ targets:
 # Registry information, to other npm-registries where Apax packages are located
 registries:
   '@simatic-ax': 'https://npm.pkg.github.com/'
-# Install settings
-installStrategy: strict
-apaxVersion: 3.4.2
+  
 # Dependencies
+catalogs:
+  "@ax/simatic-ax": ^2504.0.0
+  
 devDependencies:
   '@ax/sdk': ^2504.0.0
   "@simatic-ax/snippetscollection": ^1.0.0
+
+dependencies:
+  "@simatic-ax/io": ^9.0.0
+  "@simatic-ax/commands": ^3.0.0
+  "@ax/system-timer": ^10.0.24
 
 # Project variables
 variables:
@@ -37,9 +43,3 @@ files:
   - 'docs'
   - 'bin'
   - 'snippets'
-dependencies:
-  "@simatic-ax/io": ^9.0.0
-  "@simatic-ax/commands": ^3.0.0
-  "@ax/system-timer": ^10.0.24
-catalogs:
-  "@ax/simatic-ax": ^2504.0.0
