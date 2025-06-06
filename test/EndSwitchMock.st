@@ -11,6 +11,10 @@ NAMESPACE Simatic.Ax.Actuators
 
             ;
         END_METHOD
+
+        METHOD PUBLIC DisableMonitoring
+            ;
+        END_METHOD
     
         METHOD PUBLIC IsActivated : BOOL
             IsActivated := TRUE;
@@ -42,6 +46,10 @@ NAMESPACE Simatic.Ax.Actuators
             ;
         END_METHOD
     
+        METHOD PUBLIC DisableMonitoring
+            ;
+        END_METHOD
+
         METHOD PUBLIC IsActivated : BOOL
             IsActivated := TRUE;
             ;
@@ -69,6 +77,10 @@ NAMESPACE Simatic.Ax.Actuators
                 MonitoringTime : LTIME;
             END_VAR
 
+            ;
+        END_METHOD
+
+        METHOD PUBLIC DisableMonitoring
             ;
         END_METHOD
     
@@ -99,6 +111,10 @@ NAMESPACE Simatic.Ax.Actuators
                 MonitoringTime : LTIME;
             END_VAR
 
+            ;
+        END_METHOD
+
+        METHOD PUBLIC DisableMonitoring
             ;
         END_METHOD
     
