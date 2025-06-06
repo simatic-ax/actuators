@@ -61,9 +61,11 @@ NAMESPACE Simatic.Ax.Actuators
                     IF THIS.StateHasChanged() THEN
                         Q_ToWorkPosition.Set();
                         Q_ToHomePosition.Reset();
+                        I_InHomePosition.DisableMonitoring();
                         I_InWorkPosition.StartMonitoring(TMonToWorkPosition);
                     END_IF;
                     IF (I_InWorkPosition.IsActivated()) THEN
+                        I_InWorkPosition.DisableMonitoring();
                         THIS.SetDone();
                         Q_ToWorkPosition.Hold();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -83,6 +85,7 @@ NAMESPACE Simatic.Ax.Actuators
                     IF (THIS.StateHasChanged()) THEN
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
+                        I_InWorkPosition.DisableMonitoring();
                         I_InHomePosition.StartMonitoring(TMonToHomePosition);
                     END_IF;
                     IF (I_InHomePosition.IsActivated()) THEN
