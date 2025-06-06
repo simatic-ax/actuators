@@ -36,6 +36,10 @@ NAMESPACE Simatic.Ax.Actuators
             ;
         END_METHOD
 
+        METHOD PUBLIC DisableMonitoring
+            _monTimer(signal := FALSE);
+        END_METHOD
+
         // Checks if the monitoring time has elapsed.
         METHOD PUBLIC TimeHasElapsed : BOOL
             TimeHasElapsed := _monTimer.output;

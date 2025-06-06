@@ -11,6 +11,10 @@ NAMESPACE Simatic.Ax.Actuators
             END_VAR
         END_METHOD
 
+        // Disable monitoring the endswitch
+        METHOD DisableMonitoring
+        END_METHOD
+
         // Checks if the endswitch is currently activated.
         METHOD IsActivated : BOOL
         END_METHOD

@@ -79,6 +79,8 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Set();
                         Q_ToWorkPosition2.Reset();
+                        I_InHomePosition.DisableMonitoring();
+                        I_InWorkPosition2.DisableMonitoring();
                         I_InWorkPosition.StartMonitoring();
                     END_IF;
                 //##############################################
@@ -101,6 +103,8 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Set();
+                        I_InHomePosition.DisableMonitoring();
+                        I_InWorkPosition.DisableMonitoring();
                         I_InWorkPosition2.StartMonitoring();
                     END_IF;                    
                 //##############################################
@@ -123,6 +127,8 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Reset();
+                        I_InWorkPosition.DisableMonitoring();
+                        I_InWorkPosition2.DisableMonitoring();
                         I_InHomePosition.StartMonitoring();
                     END_IF;
                 ActuatorState#Error:
