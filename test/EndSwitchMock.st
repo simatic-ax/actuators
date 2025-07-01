@@ -4,15 +4,11 @@ NAMESPACE Simatic.Ax.Actuators
 
     CLASS EndSwitchMockActivated IMPLEMENTS itfEndswitch
 
-        METHOD PUBLIC StartMonitoring
+        METHOD PUBLIC EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME;
+                Mode : SuperVisionMode;
             END_VAR
 
-            ;
-        END_METHOD
-
-        METHOD PUBLIC DisableMonitoring
             ;
         END_METHOD
     
@@ -38,15 +34,11 @@ NAMESPACE Simatic.Ax.Actuators
 
     CLASS EndSwitchMockHasReached IMPLEMENTS itfEndswitch
 
-        METHOD PUBLIC StartMonitoring
+        // Starts monitoring the endswitch with a specified monitoring time.
+        METHOD PUBLIC EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME;
+                Mode : SuperVisionMode;
             END_VAR
-
-            ;
-        END_METHOD
-    
-        METHOD PUBLIC DisableMonitoring
             ;
         END_METHOD
 
@@ -72,15 +64,12 @@ NAMESPACE Simatic.Ax.Actuators
 
     CLASS EndSwitchMockHasLeft IMPLEMENTS itfEndswitch
 
-        METHOD PUBLIC StartMonitoring
+
+        METHOD PUBLIC EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME;
+                Mode : SuperVisionMode;
             END_VAR
 
-            ;
-        END_METHOD
-
-        METHOD PUBLIC DisableMonitoring
             ;
         END_METHOD
     
@@ -106,9 +95,10 @@ NAMESPACE Simatic.Ax.Actuators
 
     CLASS EndSwitchMockNotActivated IMPLEMENTS itfEndswitch
 
-        METHOD PUBLIC StartMonitoring
+
+        METHOD PUBLIC EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME;
+                Mode : SuperVisionMode;
             END_VAR
 
             ;

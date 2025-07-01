@@ -2,18 +2,22 @@ USING System.Timer;
 USING Simatic.Ax.IO.Input;
 NAMESPACE Simatic.Ax.Actuators    
     // Class representing an endswitch, implementing the ItfEndswitch interface.
-    CLASS Endswitch IMPLEMENTS itfEndswitch
+    CLASS BooleanEndswitch IMPLEMENTS itfEndswitch, itfBooleanUpdate
         VAR PUBLIC
             Behavior : EndswitchBehavior; // Defines whether the endswitch is normally open or closed.
+            SuperVisionTimeAction : LTIME := T#5s;
+            SuperVisionTimeReaction : LTIME := T#1s;
         END_VAR
         
         VAR
             _binSignal : BinSignal; // Binary signal for the endswitch.
             _monTimer : Ondelay;    // Timer for monitoring the endswitch.
+            _errorState : SuperVisionError;
+            _superVisionMode : SuperVisionMode;
         END_VAR
 
         // Reads the cyclic signal and updates the internal state of the endswitch.
-        METHOD PUBLIC ReadCyclic
+        METHOD PUBLIC Update
             VAR_INPUT
                 signal : BOOL;       // Current signal state.
                 valid : BOOL := TRUE; // Indicates if the signal is valid.
@@ -25,18 +29,37 @@ NAMESPACE Simatic.Ax.Actuators
             _monTimer();
         END_METHOD
 
-        // Starts monitoring the endswitch with a specified monitoring time.
-        METHOD PUBLIC StartMonitoring
-            VAR_INPUT
-                MonitoringTime : LTIME := T#5s; // Default monitoring time.
-            END_VAR
-            
-            _monTimer(signal := FALSE);
-            _monTimer(signal := TRUE, duration := MonitoringTime);
+        METHOD PUBLIC Check : SuperVisionError
+            CASE _superVisionMode OF
+                SuperVisionMode#None:
+                    Check := SuperVisionError#None;
+                SuperVisionMode#Action:
+                    _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
+
+                    // Error 
+                    IF _monTimer.output THEN
+                        Check := SuperVisionError#ActionError;
+                    END_IF;
+                SuperVisionMode#Reaction:
+                    _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
+                    // Error 
+                    IF _monTimer.output THEN
+                        Check := SuperVisionError#ResponseError;
+                    END_IF;
+                SuperVisionMode#PositionControl:
+                    IF _binSignal.QFal() OR _binSignal.QRis() THEN
+                        Check := SuperVisionError#PositionError;
+                    END_IF;
+            END_CASE;
             ;
         END_METHOD
 
-        METHOD PUBLIC DisableMonitoring
+        // Starts monitoring the endswitch with a specified monitoring time.
+        METHOD PUBLIC EnableSupervision
+            VAR_INPUT
+                Mode : SuperVisionMode;
+            END_VAR
+            _superVisionMode := Mode;
             _monTimer(signal := FALSE);
         END_METHOD
 

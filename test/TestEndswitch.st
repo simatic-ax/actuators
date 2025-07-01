@@ -5,7 +5,7 @@ NAMESPACE Simatic.Ax.Actuators
     {TestFixture}
     CLASS TestEndswitch
         VAR
-            _endswitch, _endswitchStateless  : Endswitch;
+            _endswitch, _endswitchStateless  : BooleanEndswitch;
         END_VAR
 
         {Setup}
@@ -20,7 +20,7 @@ NAMESPACE Simatic.Ax.Actuators
                 valid : BOOL := TRUE;
             END_VAR
 
-            _endswitch.ReadCyclic(signal := TRUE, valid := valid);
+            _endswitch.Update(signal := TRUE, valid := valid);
             IsTrue(condition := _endswitch.IsActivated());
         END_METHOD
 
@@ -31,8 +31,8 @@ NAMESPACE Simatic.Ax.Actuators
                 valid : BOOL := TRUE;
             END_VAR
 
-            _endswitch.ReadCyclic(signal := FALSE, valid := valid);
-            _endswitch.ReadCyclic(signal := TRUE, valid := valid);
+            _endswitch.Update(signal := FALSE, valid := valid);
+            _endswitch.Update(signal := TRUE, valid := valid);
             IsTrue(condition := _endswitch.HasReached());
         END_METHOD
 
@@ -43,8 +43,8 @@ NAMESPACE Simatic.Ax.Actuators
                 valid : BOOL := TRUE;
             END_VAR
 
-            _endswitch.ReadCyclic(signal := TRUE, valid := valid);
-            _endswitch.ReadCyclic(signal := FALSE, valid := valid);
+            _endswitch.Update(signal := TRUE, valid := valid);
+            _endswitch.Update(signal := FALSE, valid := valid);
             IsTrue(condition := _endswitch.HasLeft());
         END_METHOD
     END_CLASS

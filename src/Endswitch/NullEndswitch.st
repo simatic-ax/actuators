@@ -24,18 +24,14 @@ NAMESPACE Simatic.Ax.Actuators
         END_METHOD
 
         // Starts monitoring the dummy endswitch with a specified monitoring time.
-        METHOD PUBLIC StartMonitoring
+        METHOD PUBLIC EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME := T#5S; // Default monitoring time.
+                Mode : SuperVisionMode;
             END_VAR
             
             _monTimer(signal := FALSE);
             _monTimer(signal := TRUE, duration := MonitoringTime);
             ;
-        END_METHOD
-
-        METHOD PUBLIC DisableMonitoring
-            _monTimer(signal := FALSE);
         END_METHOD
 
         // Checks if the monitoring time has elapsed.

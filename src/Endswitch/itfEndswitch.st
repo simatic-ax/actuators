@@ -5,14 +5,10 @@ NAMESPACE Simatic.Ax.Actuators
     // Interface for an endswitch, defining methods for monitoring and retrieving its state.
     INTERFACE itfEndswitch
         // Starts monitoring the endswitch with a specified monitoring time.
-        METHOD StartMonitoring
+        METHOD EnableSupervision
             VAR_INPUT
-                MonitoringTime : LTIME; // Duration for monitoring.
+                Mode : SuperVisionMode;
             END_VAR
-        END_METHOD
-
-        // Disable monitoring the endswitch
-        METHOD DisableMonitoring
         END_METHOD
 
         // Checks if the endswitch is currently activated.

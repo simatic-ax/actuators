@@ -8,6 +8,8 @@ NAMESPACE Simatic.Ax.Actuators
         VAR PUBLIC
             I_InWorkPosition2 : itfEndswitch;
             Q_ToWorkPosition2 : itfPositionControl;
+            SuperVisionTimeLeaveWorkPos2 : LTIME := T#1s;
+            SuperVisionTimeToWorkPosition2 : LTIME := T#5s; // Monitoring time for moving to the work position. Default: 5 econds.
         END_VAR
         VAR PROTECTED
             _MonitoringTimer : System.Timer.OnDelay;
@@ -70,19 +72,22 @@ NAMESPACE Simatic.Ax.Actuators
                 // MoveToWorkPosition
                 //##############################################
                 ActuatorState#MoveToWorkPosition:
+                    // On Enter state 
+                    IF (THIS.StateHasChanged()) THEN
+                        Q_ToHomePosition.Reset();
+                        Q_ToWorkPosition.Set();
+                        Q_ToWorkPosition2.Reset();
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Reaction);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#None);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#Action);
+                    END_IF;
+                    // Transition to next state; action before leaving state 
                     IF (I_InWorkPosition.IsActivated()) THEN
                         Q_ToWorkPosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
                     END_IF;
-                    IF (THIS.StateHasChanged()) THEN
-                        Q_ToHomePosition.Reset();
-                        Q_ToWorkPosition.Set();
-                        Q_ToWorkPosition2.Reset();
-                        I_InHomePosition.DisableMonitoring();
-                        I_InWorkPosition2.DisableMonitoring();
-                        I_InWorkPosition.StartMonitoring();
-                    END_IF;
+
                 //##############################################
                 // InWorkPosition
                 //##############################################
@@ -103,9 +108,9 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Set();
-                        I_InHomePosition.DisableMonitoring();
-                        I_InWorkPosition.DisableMonitoring();
-                        I_InWorkPosition2.StartMonitoring();
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Reaction);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#None);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#Action);
                     END_IF;                    
                 //##############################################
                 // InWorkPosition2
@@ -127,9 +132,9 @@ NAMESPACE Simatic.Ax.Actuators
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Reset();
-                        I_InWorkPosition.DisableMonitoring();
-                        I_InWorkPosition2.DisableMonitoring();
-                        I_InHomePosition.StartMonitoring();
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#None);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#None);
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Action);
                     END_IF;
                 ActuatorState#Error:
                     ;
