@@ -23,6 +23,10 @@ NAMESPACE Simatic.Ax.Actuators
         METHOD HasLeft : BOOL
         END_METHOD
 
+        // Returns the error status of the endswitch 
+        METHOD GetError : SuperVisionError
+        END_METHOD
+
         // Checks if the monitoring time has elapsed.
         METHOD TimeHasElapsed : BOOL
         END_METHOD

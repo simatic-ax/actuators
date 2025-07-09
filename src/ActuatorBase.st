@@ -4,9 +4,9 @@ USING Simatic.Ax.AutomationFramework;
 NAMESPACE Simatic.Ax.Actuators
 
     // Abstract base class for actuators, providing common functionality for actuator control.
-    CLASS ABSTRACT ActuatorBase
-        EXTENDS ExecuteControlModuleAbstract
-        IMPLEMENTS itfActuator
+    CLASS ABSTRACT ActuatorBase 
+        EXTENDS ExecuteControlModuleAbstract 
+        IMPLEMENTS itfActuator, itfErrorReceiver
 
         // Public variables
         VAR PUBLIC
@@ -14,10 +14,6 @@ NAMESPACE Simatic.Ax.Actuators
             I_InWorkPosition : itfEndswitch; // End switch indicating the actuator is in the work position.
             Q_ToHomePosition : itfPositionControl;  // Command to move the actuator to the home position.
             Q_ToWorkPosition : itfPositionControl;  // Command to move the actuator to the work position.
-            SuperVisionTimeLeaveHomePos : LTIME := T#1s;
-            SuperVisionTimeLeaveWorkPos : LTIME := T#1s;
-            SuperVisionTimeToWorkPosition : LTIME := T#5s; // Monitoring time for moving to the work position. Default: 5 seconds.
-            SuperVisionTimeToHomePosition : LTIME := T#5s; // Monitoring time for moving to the home position. Default: 5 seconds.
         END_VAR
 
         // Private variables
@@ -131,6 +127,7 @@ NAMESPACE Simatic.Ax.Actuators
             END_VAR
             _currentState := NewState;
         END_METHOD
+    
     END_CLASS
 
 END_NAMESPACE

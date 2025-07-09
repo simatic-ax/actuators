@@ -30,6 +30,10 @@ NAMESPACE Simatic.Ax.Actuators
         METHOD PUBLIC TimeHasElapsed : BOOL
             TimeHasElapsed := FALSE;
         END_METHOD
+    
+        METHOD PUBLIC GetError : SuperVisionError
+            ;
+        END_METHOD
     END_CLASS
 
     CLASS EndSwitchMockHasReached IMPLEMENTS itfEndswitch
@@ -59,6 +63,10 @@ NAMESPACE Simatic.Ax.Actuators
     
         METHOD PUBLIC TimeHasElapsed : BOOL
             TimeHasElapsed := FALSE;
+        END_METHOD
+    
+        METHOD PUBLIC GetError : SuperVisionError
+            ;
         END_METHOD
     END_CLASS
 
@@ -90,6 +98,10 @@ NAMESPACE Simatic.Ax.Actuators
     
         METHOD PUBLIC TimeHasElapsed : BOOL
             TimeHasElapsed := FALSE;
+        END_METHOD
+    
+        METHOD PUBLIC GetError : SuperVisionError
+            ;
         END_METHOD
     END_CLASS
 
@@ -125,6 +137,10 @@ NAMESPACE Simatic.Ax.Actuators
     
         METHOD PUBLIC TimeHasElapsed : BOOL
             TimeHasElapsed := FALSE;
+        END_METHOD
+    
+        METHOD PUBLIC GetError : SuperVisionError
+            ;
         END_METHOD
     END_CLASS
 END_NAMESPACE

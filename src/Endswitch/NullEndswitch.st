@@ -54,5 +54,12 @@ NAMESPACE Simatic.Ax.Actuators
             HasLeft := _hasLeft;
             ;
         END_METHOD
+
+        // Returns the error status of the endswitch 
+        METHOD PUBLIC GetError : SuperVisionError
+            GetError := SuperVisionError#None;
+        END_METHOD
+
+
     END_CLASS
 END_NAMESPACE

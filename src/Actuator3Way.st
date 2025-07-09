@@ -8,8 +8,6 @@ NAMESPACE Simatic.Ax.Actuators
         VAR PUBLIC
             I_InWorkPosition2 : itfEndswitch;
             Q_ToWorkPosition2 : itfPositionControl;
-            SuperVisionTimeLeaveWorkPos2 : LTIME := T#1s;
-            SuperVisionTimeToWorkPosition2 : LTIME := T#5s; // Monitoring time for moving to the work position. Default: 5 econds.
         END_VAR
         VAR PROTECTED
             _MonitoringTimer : System.Timer.OnDelay;
@@ -152,6 +150,13 @@ NAMESPACE Simatic.Ax.Actuators
                 THIS.ChangeState(ActuatorState#MoveToWorkPosition2);
             END_IF;
             GoToWorkPosition2 := THIS;
+        END_METHOD
+    
+        METHOD PUBLIC OVERRIDE OnNotification
+            VAR_INPUT
+                i : Info;
+            END_VAR
+            ;
         END_METHOD
     END_CLASS
 
