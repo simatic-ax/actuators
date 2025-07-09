@@ -152,12 +152,6 @@ NAMESPACE Simatic.Ax.Actuators
             GoToWorkPosition2 := THIS;
         END_METHOD
     
-        METHOD PUBLIC OVERRIDE OnNotification
-            VAR_INPUT
-                i : Info;
-            END_VAR
-            ;
-        END_METHOD
     END_CLASS
 
 END_NAMESPACE

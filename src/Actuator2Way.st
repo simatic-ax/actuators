@@ -9,17 +9,6 @@ NAMESPACE Simatic.Ax.Actuators
 
         // Initializes the actuator. This method is called during the setup phase.
         METHOD PROTECTED OVERRIDE InitActuator
-            VAR_TEMP
-                ep : itfErrorProvider;
-            END_VAR
-            ep ?= I_InHomePosition;
-            IF (ep <> NULL) THEN
-                ep.Attach(THIS);
-            END_IF;
-            ep ?= I_InWorkPosition;
-            IF (ep <> NULL) THEN
-                ep.Attach(THIS);
-            END_IF;
             ;
         END_METHOD
 
@@ -111,18 +100,18 @@ NAMESPACE Simatic.Ax.Actuators
                 ActuatorState#Error:
                     Q_ToHomePosition.Reset();
                     Q_ToWorkPosition.Reset();
+                    
             END_CASE;
         END_METHOD
 
         METHOD PUBLIC OVERRIDE OnNotification
-            VAR_INPUT
-                i : Info;
-            END_VAR
             // Read Error States of Endswitch
             I_InHomePosition.GetError();
             I_InWorkPosition.GetError();
             THIS.ChangeState(ActuatorState#Error);
         END_METHOD
+    
+
     END_CLASS
 
 END_NAMESPACE

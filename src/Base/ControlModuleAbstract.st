@@ -1,15 +1,24 @@
-USING Simatic.Ax.Actuators;
-USING Simatic.Ax.Actuators;
+USING NotificationService.Interfaces;
 USING Simatic.Ax.Actuators;
 USING Simatic.Ax.Commands;
-
+USING NotificationService.ErrorHandling;
+USING System.Strings;
 NAMESPACE Simatic.Ax.AutomationFramework
 
     ///Provides basic functionality for programming on a plc
     /// has acces to the protected Methods and "Contructors" of the classes
-    CLASS ABSTRACT ExecuteControlModuleAbstract
-        EXTENDS ExecuteCommand
-        IMPLEMENTS itfErrorProvider, itfErrorReceiver
+    CLASS ABSTRACT ExecuteControlModuleAbstract 
+        EXTENDS ExecuteCommand IMPLEMENTS IAlarmProvider
+        
+        VAR PUBLIC
+            _id : STRING;
+            _name : STRING;
+            
+        END_VAR
+    
+        VAR PUBLIC
+            _notificationService : INotificationService;
+        END_VAR
         VAR PROTECTED
             _init : BOOL;
             _hasError : BOOL;
@@ -17,9 +26,7 @@ NAMESPACE Simatic.Ax.AutomationFramework
             _exec : BOOL;
 
         END_VAR
-        VAR PRIVATE
-            _errorReceiver : itfErrorReceiver;
-        END_VAR
+
 
         METHOD PROTECTED OVERRIDE Execute
             IF (NOT _init) THEN
@@ -49,26 +56,80 @@ NAMESPACE Simatic.Ax.AutomationFramework
             GetErrorStatus := _errorState;
         END_METHOD
 
-        METHOD PROTECTED Notify
+    
+        METHOD PUBLIC SetNotificationService
             VAR_INPUT
-                i : Info;
+                ns : INotificationService;
             END_VAR
-            IF (_errorReceiver <> NULL) THEN
-                _errorReceiver.OnNotification();
+            _notificationService := ns;
+        END_METHOD
+        
+        METHOD PUBLIC Notify : BOOL
+            VAR_INPUT
+                e : Alarm;
+            END_VAR
+    
+            VAR_TEMP
+                t : Alarm;
+            END_VAR
+            t := e;
+            IF e.source = '' THEN
+                t.source := _name;
+            ELSE
+                t.source := Concat(_name, '.', e.source);
             END_IF;
+            _notificationService.RegisterAlarm(THIS, t);
+            THIS.OnNotification();
+            Notify := TRUE;
         END_METHOD
-
-        METHOD PUBLIC Attach
+    
+        METHOD PUBLIC OnNotification ; END_METHOD
+    
+        // // concatenation of bools incorrect
+        // METHOD PUBLIC Notify : BOOL
+        //     VAR_INPUT
+        //         errors : ARRAY[*] OF Alarm;
+        //     END_VAR
+        //     VAR_TEMP
+        //         i, j : DINT := 0;
+        //         result : BOOL := FALSE;
+        //     END_VAR
+        //     i := LOWER_BOUND(errors, 1);
+        //     j := UPPER_BOUND(errors, 1);
+    
+        //     FOR i := LOWER_BOUND(errors, 1) TO UPPER_BOUND(errors, 1) DO
+        //         result := _notificationService.RegisterAlarm(THIS, errors[i]);  
+        //     END_FOR;
+    
+        //     THIS.OnNotification();
+            
+        //     Notify := result;
+        // END_METHOD
+    
+        METHOD PUBLIC Equals : BOOL
             VAR_INPUT
-                er : itfErrorReceiver;
+                other : IComparable;
             END_VAR
-            _errorReceiver := er;
-            ;
-        END_METHOD
-        METHOD PUBLIC ABSTRACT OnNotification
-            VAR_INPUT
-                i : Info;
+            VAR
+                i : REF_TO ErrorProviderBase;
             END_VAR
+            IF other = NULL THEN
+                Equals := FALSE;
+                RETURN;
+            END_IF;
+            i ?= other;
+    
+            IF i = NULL THEN
+                Equals := FALSE;
+                RETURN;
+            END_IF;
+    
+            IF i^._id <> _id THEN
+                Equals := FALSE;
+                RETURN;
+            END_IF;
+            Equals := TRUE;
+    
         END_METHOD
     END_CLASS
 

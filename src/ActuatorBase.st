@@ -1,3 +1,4 @@
+USING Simatic.Ax.AutomationFramework;
 USING Simatic.Ax.Commands;
 USING Simatic.Ax.AutomationFramework;
 
@@ -6,7 +7,7 @@ NAMESPACE Simatic.Ax.Actuators
     // Abstract base class for actuators, providing common functionality for actuator control.
     CLASS ABSTRACT ActuatorBase 
         EXTENDS ExecuteControlModuleAbstract 
-        IMPLEMENTS itfActuator, itfErrorReceiver
+        IMPLEMENTS itfActuator
 
         // Public variables
         VAR PUBLIC

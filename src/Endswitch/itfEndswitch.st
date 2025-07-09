@@ -3,7 +3,7 @@ USING System.Timer;
 NAMESPACE Simatic.Ax.Actuators    
 
     // Interface for an endswitch, defining methods for monitoring and retrieving its state.
-    INTERFACE itfEndswitch
+    INTERFACE itfEndswitch 
         // Starts monitoring the endswitch with a specified monitoring time.
         METHOD EnableSupervision
             VAR_INPUT

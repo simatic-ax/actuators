@@ -1,8 +1,10 @@
+USING NotificationService.ErrorHandling;
 USING System.Timer;
 USING Simatic.Ax.IO.Input;
+USING NotificationService.ErrorHandling;
 NAMESPACE Simatic.Ax.Actuators    
     // Class representing an endswitch, implementing the ItfEndswitch interface.
-    CLASS BooleanEndswitch IMPLEMENTS itfEndswitch, itfBooleanUpdate, itfErrorProvider
+    CLASS BooleanEndswitch EXTENDS ErrorProviderBase IMPLEMENTS itfEndswitch, itfBooleanUpdate
         VAR PUBLIC
             Behavior : EndswitchBehavior; // Defines whether the endswitch is normally open or closed.
             SuperVisionTimeAction : LTIME := T#5s;
@@ -14,9 +16,8 @@ NAMESPACE Simatic.Ax.Actuators
             _monTimer : Ondelay;    // Timer for monitoring the endswitch.
             _errorState : SuperVisionError;
             _superVisionMode : SuperVisionMode;
-            
-            _errorReceiver : itfErrorReceiver;
-            _errorReceiver2 : itfErrorReceiver;
+            _isInitialized : BOOL;
+            _Alarm : Alarm := (id := '4711', errorMessage := 'Endswitch fault');
         END_VAR
 
         // Reads the cyclic signal and updates the internal state of the endswitch.
@@ -43,18 +44,21 @@ NAMESPACE Simatic.Ax.Actuators
                     // Error 
                     IF _monTimer.output THEN
                         Check := SuperVisionError#ActionError;
-                        _errorReceiver.OnNotification();
+                        _Alarm.errorMessage := 'Action Error';
+                        THIS.Notify(e := _Alarm);
                     END_IF;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
                     // Error 
                     IF _monTimer.output THEN
-                        _errorReceiver.OnNotification();
+                        _Alarm.errorMessage := 'Reaction Error';
+                        THIS.Notify(e := _Alarm);
                         Check := SuperVisionError#ResponseError;
                     END_IF;
                 SuperVisionMode#PositionControl:
                     IF _binSignal.QFal() OR _binSignal.QRis() THEN
-                        _errorReceiver.OnNotification();
+                        _Alarm.errorMessage := 'Position Error';
+                        THIS.Notify(e := _Alarm);
                         Check := SuperVisionError#PositionError;
                     END_IF;
             END_CASE;
@@ -98,25 +102,6 @@ NAMESPACE Simatic.Ax.Actuators
             ;
         END_METHOD
     
-        METHOD PUBLIC Attach
-            VAR_INPUT
-                er : itfErrorReceiver;
-            END_VAR
-            IF (_errorReceiver = NULL) THEN
-                _errorReceiver := er;
-            ELSIF _errorReceiver2 = NULL THEN
-                _errorReceiver2 := er;
-            ELSE
-                // No capacity
-                ;
-            END_IF;
-            ;
-        END_METHOD
-
-        METHOD PRIVATE Notify
-            _errorReceiver.OnNotification();
-            _errorReceiver2.OnNotification();
-        END_METHOD
     END_CLASS
 
 END_NAMESPACE
