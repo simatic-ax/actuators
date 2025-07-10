@@ -15,6 +15,8 @@ NAMESPACE Simatic.Ax.Actuators
             I_InWorkPosition : itfEndswitch; // End switch indicating the actuator is in the work position.
             Q_ToHomePosition : itfPositionControl;  // Command to move the actuator to the home position.
             Q_ToWorkPosition : itfPositionControl;  // Command to move the actuator to the work position.
+            TimeToWork : LTIME := T#5s;
+            TimeToHome : LTIME := T#5s;
         END_VAR
 
         // Private variables
@@ -50,6 +52,8 @@ NAMESPACE Simatic.Ax.Actuators
         METHOD PROTECTED OVERRIDE _initmethod
             IF (I_InHomePosition = NULL) THEN
                 I_InHomePosition := _binSignalHomePosNull;
+                _binSignalHomePosNull.MonitoringTime := TimeToHome;
+                _binSignalWorkPosNull.MonitoringTime := TimeToWork;
                 _simFeedbackHomePos := TRUE;
             END_IF;
             IF (I_InWorkPosition = NULL) THEN

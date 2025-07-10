@@ -13,10 +13,6 @@ NAMESPACE Simatic.Ax.AutomationFramework
         VAR PUBLIC
             _id : STRING;
             _name : STRING;
-            
-        END_VAR
-    
-        VAR PUBLIC
             _notificationService : INotificationService;
         END_VAR
         VAR PROTECTED

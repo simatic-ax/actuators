@@ -28,9 +28,17 @@ NAMESPACE Simatic.Ax.Actuators
             VAR_INPUT
                 Mode : SuperVisionMode;
             END_VAR
-            
-            _monTimer(signal := FALSE);
-            _monTimer(signal := TRUE, duration := MonitoringTime);
+            CASE Mode OF
+                SuperVisionMode#None:
+                    _monTimer(signal := FALSE);    
+                SuperVisionMode#Action:
+                    _monTimer(signal := TRUE, duration := MonitoringTime);
+                SuperVisionMode#Reaction:
+                    _monTimer(signal := FALSE);    
+                SuperVisionMode#PositionControl:
+                    _monTimer(signal := FALSE);    
+
+            END_CASE;
             ;
         END_METHOD
 
