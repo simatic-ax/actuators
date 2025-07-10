@@ -46,6 +46,7 @@ NAMESPACE Simatic.Ax.Actuators
                         Check := SuperVisionError#ActionError;
                         _Alarm.errorMessage := 'Action Error';
                         THIS.Notify(e := _Alarm);
+                        _monTimer(signal := FALSE);
                     END_IF;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
@@ -54,6 +55,7 @@ NAMESPACE Simatic.Ax.Actuators
                         _Alarm.errorMessage := 'Reaction Error';
                         THIS.Notify(e := _Alarm);
                         Check := SuperVisionError#ResponseError;
+                        _monTimer(signal := FALSE);
                     END_IF;
                 SuperVisionMode#PositionControl:
                     IF _binSignal.QFal() OR _binSignal.QRis() THEN
