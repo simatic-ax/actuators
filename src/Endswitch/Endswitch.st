@@ -55,7 +55,7 @@ NAMESPACE Simatic.Ax.Actuators
                     END_IF;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
-                    IF (THIS.HasLeft()) THEN
+                    IF (NOT THIS.IsActivated()) THEN
                         _monTimer(signal := FALSE);
                     END_IF;
 

@@ -110,6 +110,7 @@ NAMESPACE Simatic.Ax.Actuators
             // Read Error States of Endswitch
             I_InHomePosition.GetError();
             I_InWorkPosition.GetError();
+            THIS.SetError(WORD#16#8201); 
             THIS.ChangeState(ActuatorState#Error);
         END_METHOD
     

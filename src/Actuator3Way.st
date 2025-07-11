@@ -145,7 +145,9 @@ NAMESPACE Simatic.Ax.Actuators
                         I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Action);
                     END_IF;
                 ActuatorState#Error:
-                    ;
+                    Q_ToHomePosition.Reset();
+                    Q_ToWorkPosition.Reset();
+                    Q_ToWorkPosition2.Reset();
             END_CASE;
         END_METHOD
 
@@ -162,14 +164,13 @@ NAMESPACE Simatic.Ax.Actuators
             GoToWorkPosition2 := THIS;
         END_METHOD
     
-        // METHOD PUBLIC OVERRIDE OnNotification
-        //     VAR_TEMP
-        //         e : Alarm;
-        //     END_VAR
-        //     e.errorMessage := '3 Way actuiator was notified from somebody';
-        //     THIS.Notify(e)
-        //     ;
-        // END_METHOD
+        METHOD PUBLIC OVERRIDE OnNotification
+            // Read Error States of Endswitch
+            I_InHomePosition.GetError();
+            I_InWorkPosition.GetError();
+            THIS.SetError(WORD#16#8201); 
+            THIS.ChangeState(ActuatorState#Error);
+        END_METHOD
 
     END_CLASS
 
