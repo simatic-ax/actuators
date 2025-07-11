@@ -65,6 +65,7 @@ NAMESPACE Simatic.Ax.Actuators
                     END_IF;
                     IF (I_InWorkPosition.IsActivated()) THEN
                         I_InWorkPosition.EnableSupervision(Mode := SupervisionMode#PositionControl);
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
                         THIS.SetDone();
                         Q_ToWorkPosition.Hold();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -89,6 +90,7 @@ NAMESPACE Simatic.Ax.Actuators
                     END_IF;
                     IF (I_InHomePosition.IsActivated()) THEN
                         I_InHomePosition.EnableSupervision(Mode := SupervisionMode#PositionControl);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
                         THIS.ChangeState(ActuatorState#InHomePosition);
                         Q_ToHomePosition.Hold();
                         THIS.SetDone();

@@ -1,3 +1,4 @@
+USING NotificationService.ErrorHandling;
 USING Simatic.Ax.Commands;
 USING System.Timer;
 
@@ -81,6 +82,9 @@ NAMESPACE Simatic.Ax.Actuators
                     END_IF;
                     // Transition to next state; action before leaving state 
                     IF (I_InWorkPosition.IsActivated()) THEN
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
                         Q_ToWorkPosition.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition);
@@ -98,6 +102,9 @@ NAMESPACE Simatic.Ax.Actuators
                 //##############################################
                 ActuatorState#MoveToWorkPosition2:
                     IF (I_InWorkPosition2.IsActivated()) THEN
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
                         Q_ToWorkPosition2.Hold();
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InWorkPosition2);
@@ -123,6 +130,9 @@ NAMESPACE Simatic.Ax.Actuators
                 ActuatorState#MoveToHomePosition:
                     IF (I_InHomePosition.IsActivated()) THEN
                         Q_ToHomePosition.Hold();
+                        I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+                        I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#PositionControl);
                         THIS.SetDone();
                         THIS.ChangeState(ActuatorState#InHomePosition);
                     END_IF;
@@ -152,6 +162,15 @@ NAMESPACE Simatic.Ax.Actuators
             GoToWorkPosition2 := THIS;
         END_METHOD
     
+        // METHOD PUBLIC OVERRIDE OnNotification
+        //     VAR_TEMP
+        //         e : Alarm;
+        //     END_VAR
+        //     e.errorMessage := '3 Way actuiator was notified from somebody';
+        //     THIS.Notify(e)
+        //     ;
+        // END_METHOD
+
     END_CLASS
 
 END_NAMESPACE

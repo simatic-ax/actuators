@@ -18,6 +18,7 @@ NAMESPACE Simatic.Ax.Actuators
             _superVisionMode : SuperVisionMode;
             _isInitialized : BOOL;
             _Alarm : Alarm := (id := '4711', errorMessage := 'Endswitch fault');
+            _count : INT;
         END_VAR
 
         // Reads the cyclic signal and updates the internal state of the endswitch.
@@ -37,30 +38,41 @@ NAMESPACE Simatic.Ax.Actuators
         METHOD PRIVATE Check : SuperVisionError
             CASE _superVisionMode OF
                 SuperVisionMode#None:
+                    _monTimer(signal := FALSE);
                     Check := SuperVisionError#None;
                 SuperVisionMode#Action:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
-
+                    IF (THIS.HasReached()) THEN
+                        _monTimer(signal := FALSE);
+                    END_IF;
                     // Error 
                     IF _monTimer.output THEN
                         Check := SuperVisionError#ActionError;
                         _Alarm.errorMessage := 'Action Error';
                         THIS.Notify(e := _Alarm);
+                        _count := _count + 1;
                         _monTimer(signal := FALSE);
                     END_IF;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
+                    IF (THIS.HasLeft()) THEN
+                        _monTimer(signal := FALSE);
+                    END_IF;
+
                     // Error 
                     IF _monTimer.output THEN
                         _Alarm.errorMessage := 'Reaction Error';
                         THIS.Notify(e := _Alarm);
+                        _count := _count + 1;
                         Check := SuperVisionError#ResponseError;
                         _monTimer(signal := FALSE);
                     END_IF;
                 SuperVisionMode#PositionControl:
+                    _monTimer(signal := FALSE);
                     IF _binSignal.QFal() OR _binSignal.QRis() THEN
                         _Alarm.errorMessage := 'Position Error';
                         THIS.Notify(e := _Alarm);
+                        _count := _count + 1;
                         Check := SuperVisionError#PositionError;
                     END_IF;
             END_CASE;
