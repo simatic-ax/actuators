@@ -31,6 +31,7 @@ dependencies:
   "@simatic-ax/commands": ^3.0.0
   "@ax/system-timer": ^10.0.24
   "@ax/system-strings": 10.0.24
+  "@ax/axunit-mocking": 8.0.33
 
 # Project variables
 variables:

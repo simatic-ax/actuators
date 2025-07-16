@@ -1,11 +1,13 @@
 USING AxUnit.Assert;
-
+USING AxUnit.ResultFunctions;
+USING System.Strings;
 NAMESPACE Simatic.Ax.Actuators
 
     {TestFixture}
     CLASS TestEndswitch
         VAR
             _endswitch, _endswitchStateless  : BooleanEndswitch;
+            res : BOOL;
         END_VAR
 
         {Setup}
@@ -47,6 +49,219 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE, valid := valid);
             IsTrue(condition := _endswitch.HasLeft());
         END_METHOD
+
+        {Test}
+        METHOD PUBLIC TestEnableSupervision
+            VAR
+                mode : SuperVisionMode;
+            END_VAR
+
+            // Test enabling supervision with different modes
+            mode := SuperVisionMode#None;
+            _endswitch.EnableSupervision(Mode := mode);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+
+            mode := SuperVisionMode#Reaction;
+            _endswitch.EnableSupervision(Mode := mode);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+
+            mode := SuperVisionMode#Action;
+            _endswitch.EnableSupervision(Mode := mode);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+
+            mode := SuperVisionMode#PositionControl;
+            _endswitch.EnableSupervision(Mode := mode);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+        END_METHOD
+
+        {Test}
+        METHOD PUBLIC TestUpdateAndCheck
+            VAR
+                signal : BOOL;
+                valid : BOOL := TRUE;
+                default : BOOL := FALSE;
+            END_VAR
+
+            // Test updating the endswitch with valid signals
+            signal := TRUE;
+            _endswitch.Update(signal := signal, valid := valid, default := default);
+            IsTrue(condition := _endswitch.IsActivated());
+
+            signal := FALSE;
+            _endswitch.Update(signal := signal, valid := valid, default := default);
+            IsFalse(condition := _endswitch.IsActivated());
+
+            // Test supervision errors
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
+            _endswitch.Update(signal := FALSE, valid := valid, default := default);
+            _endswitch.Update(signal := TRUE, valid := valid, default := default);
+            IsTrue(condition := _endswitch.HasReached());
+
+            _endswitch.EnableSuperVision(Mode := SuperVisionMode#Action);
+            _endswitch.Update(signal := TRUE, valid := valid, default := default);
+            _endswitch.Update(signal := FALSE, valid := valid, default := default);
+            IsTrue(condition := _endswitch.HasLeft());
+        END_METHOD
+
+        {Test}
+        METHOD PUBLIC TestGetError
+            VAR
+                mode : SuperVisionMode;
+            END_VAR
+
+            // Test getting error states
+            mode := SuperVisionMode#None;
+            _endswitch.EnableSupervision(Mode := mode);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+
+            mode := SuperVisionMode#Reaction;
+            _endswitch.EnableSupervision(Mode := mode);
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := TRUE, valid := TRUE);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+
+            mode := SuperVisionMode#Action;
+            _endswitch.EnableSupervision(Mode := mode);
+            _endswitch.Update(signal := TRUE, valid := TRUE);
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+        END_METHOD
+
+        {Test}
+        // Tests the error behavior for SuperVisionMode#Reaction.
+        METHOD PUBLIC Test_ReactionError_Without_any_error
+            // Step 1: Mock the OnDelay timer to simulate the timer not elapsed
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_false');
+            
+            // Step 2: Enable Reaction supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
+
+            // Step 3: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 4: Verify that the no error is returned.
+            Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
+        END_METHOD
+
+
+        {Test}
+        // Tests the error behavior for SuperVisionMode#Reaction.
+        METHOD PUBLIC Test_ReactionError_With_error
+            // Step 1: Mock the OnDelay timer to simulate the timer not elapsed
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_false');
+            
+            // Step 2: Enable Reaction supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
+
+            // Step 3: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 4: Mock the OnDelay timer to simulate the timer elapsing.
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_true');
+
+            // Step 5: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 6: Verify that the ReactionError is returned.
+            Equal(expected := SuperVisionError#ReactionError, actual := _endswitch.GetError());
+        END_METHOD
+
+
+        {Test}
+        // Tests the error behavior for SuperVisionMode#Action.
+        METHOD PUBLIC Test_ActionError_Without_any_error
+            // Step 1: Mock the OnDelay timer to simulate the timer not elapsed
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_false');
+            
+            // Step 2: Enable Reaction supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Action);
+
+            // Step 3: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 4: Verify that the no error is returned.
+            Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
+        END_METHOD
+
+
+        {Test}
+        // Tests the error behavior for SuperVisionMode#Action.
+        METHOD PUBLIC Test_ActionError_With_error
+            // Step 1: Mock the OnDelay timer to simulate the timer not elapsed
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_false');
+            
+            // Step 2: Enable Reaction supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Action);
+
+            // Step 3: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 4: Mock the OnDelay timer to simulate the timer elapsing.
+            AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_true');
+
+            // Step 5: Simulate the condition where the target position is not reached.
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 6: Verify that the ReactionError is returned.
+            Equal(expected := SuperVisionError#ActionError, actual := _endswitch.GetError());
+        END_METHOD
+
+
+        {Test}
+        // Tests the error behavior for SuperVisionMode#PositionControl.
+        METHOD PUBLIC Test_Error_Behavior_PositionControl
+            // Step 1: Enable PositionControl supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+
+            // Step 2: Simulate an unexpected position change.
+            _endswitch.Update(signal := TRUE, valid := TRUE);
+            _endswitch.Update(signal := FALSE, valid := TRUE);
+
+            // Step 3: Verify that the PositionError is returned.
+            Equal(expected := SuperVisionError#PositionError, actual := _endswitch.GetError());
+        END_METHOD
     END_CLASS
+
+
+    FUNCTION EqualSuperVisionError
+        VAR_INPUT
+            expected : SuperVisionError;
+            actual : SuperVisionError;
+            messageOnFail : STRING;
+            {CallerFilePath}
+            file : WSTRING[1024];
+            {CallerLineNumber}
+            line : INT;
+        END_VAR
+        VAR_TEMP
+            messageStr : STRING;
+        END_VAR
+
+        IF expected = actual THEN
+            axunit_Succeed();
+        ELSE
+            messageStr := Concat('Expected = ', ToStringSuperVisionError(expected), ' Actual = ', ToStringSuperVisionError(actual));
+            axunit_Fail(messageStr, file, line);
+        END_IF;
+    END_FUNCTION
+
+    FUNCTION ToStringSuperVisionError : STRING
+        VAR_INPUT
+            val : SuperVisionError;
+        END_VAR
+        IF val = SuperVisionError#None THEN
+            ToStringSuperVisionError := 'None';
+        ELSIF val = SuperVisionError#PositionError THEN
+            ToStringSuperVisionError := 'PositionControl';
+        ELSIF val = SuperVisionError#ActionError THEN
+            ToStringSuperVisionError := 'Action';
+        ELSIF val = SuperVisionError#ReactionError THEN
+            ToStringSuperVisionError := 'Reaction';
+        ELSE
+            ToStringSuperVisionError := 'Unknown';
+        END_IF;
+    END_FUNCTION
 
 END_NAMESPACE

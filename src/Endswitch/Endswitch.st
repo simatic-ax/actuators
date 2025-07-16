@@ -79,27 +79,31 @@ NAMESPACE Simatic.Ax.Actuators
         /// - ActionError: No action occurred after initiating a command, and the current position was not left.
         /// - ReactionError: The target position was not reached despite the command being executed.
         METHOD PRIVATE Check : SuperVisionError
+            
             CASE _superVisionMode OF
                 SuperVisionMode#None:
                     _monTimer(signal := FALSE);
-                    Check := SuperVisionError#None;
+                    Check := _errorState;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
+                    Check := SuperVisionError#None;                    
                     IF (_hasReached) THEN
                         _monTimer(signal := FALSE);
+                        Check := SuperVisionError#None;
                     END_IF;
                     // Error 
                     IF _monTimer.output THEN
-                        Check := SuperVisionError#ReactionError;
                         _Alarm.errorMessage := 'Target position not reached (Reaction Error)';
                         THIS.Notify(e := _Alarm);
                         _count := _count + 1;
                         _monTimer(signal := FALSE);
+                        Check := SuperVisionError#ReactionError;
                     END_IF;
                 SuperVisionMode#Action:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
                     IF (_hasLeft) THEN
                         _monTimer(signal := FALSE);
+                        Check := SuperVisionError#None;
                     END_IF;
 
                     // Error 
@@ -107,11 +111,12 @@ NAMESPACE Simatic.Ax.Actuators
                         _Alarm.errorMessage := 'No action occurred after command initiation (Action Error)';
                         THIS.Notify(e := _Alarm);
                         _count := _count + 1;
-                        Check := SuperVisionError#ReactionError;
                         _monTimer(signal := FALSE);
+                        Check := SuperVisionError#ActionError;
                     END_IF;
                 SuperVisionMode#PositionControl:
                     _monTimer(signal := FALSE);
+                    Check := SuperVisionError#None;
                     IF _hasReached OR _hasLeft THEN
                         _Alarm.errorMessage := 'Unexpected position change detected (Position Error)';
                         THIS.Notify(e := _Alarm);

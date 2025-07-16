@@ -36,7 +36,9 @@ NAMESPACE NotificationService
                 ELSE
                     t.source := Concat(_name, '.', e.source);
                 END_IF;
-                _notificationService.RegisterAlarm(THIS, t);
+                IF (_notificationService <> NULL) THEN
+                    _notificationService.RegisterAlarm(THIS, t);
+                END_IF;
                 THIS.OnNotification();
                 Notify := TRUE;
             END_METHOD
