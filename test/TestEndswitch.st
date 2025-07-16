@@ -116,14 +116,14 @@ NAMESPACE Simatic.Ax.Actuators
 
             mode := SuperVisionMode#Reaction;
             _endswitch.EnableSupervision(Mode := mode);
-            _endswitch.Update(signal := FALSE, valid := TRUE);
-            _endswitch.Update(signal := TRUE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
+            _endswitch.Update(signal := TRUE);
             EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#Action;
             _endswitch.EnableSupervision(Mode := mode);
-            _endswitch.Update(signal := TRUE, valid := TRUE);
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := TRUE);
+            _endswitch.Update(signal := FALSE);
             EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
         END_METHOD
 
@@ -137,10 +137,16 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
 
             // Step 3: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 4: Verify that the no error is returned.
+            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+
+            // Step 5: Simulate the condition where the target position is reached.
+            _endswitch.Update(signal := TRUE);
+            
+            // Step 6: Verify that the no error is returned.
             Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
         END_METHOD
 
@@ -155,13 +161,13 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
 
             // Step 3: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 4: Mock the OnDelay timer to simulate the timer elapsing.
             AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_true');
 
             // Step 5: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 6: Verify that the ReactionError is returned.
             Equal(expected := SuperVisionError#ReactionError, actual := _endswitch.GetError());
@@ -178,11 +184,18 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.EnableSupervision(Mode := SuperVisionMode#Action);
 
             // Step 3: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := TRUE);
+            _endswitch.Update(signal := TRUE);
 
             // Step 4: Verify that the no error is returned.
+            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+
+            // Step 5: Simulate the condition where the target position is reached.
+            _endswitch.Update(signal := FALSE);
+
+            // Step 6: Verify that the no error is returned.
             Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            
         END_METHOD
 
 
@@ -196,13 +209,13 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.EnableSupervision(Mode := SuperVisionMode#Action);
 
             // Step 3: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 4: Mock the OnDelay timer to simulate the timer elapsing.
             AxUnit.Mocking.Mock('System.Timer.OnDelay', 'Simatic.Ax.Mocks.OnDelayMock_true');
 
             // Step 5: Simulate the condition where the target position is not reached.
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 6: Verify that the ReactionError is returned.
             Equal(expected := SuperVisionError#ActionError, actual := _endswitch.GetError());
@@ -216,11 +229,50 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.EnableSupervision(Mode := SuperVisionMode#PositionControl);
 
             // Step 2: Simulate an unexpected position change.
-            _endswitch.Update(signal := TRUE, valid := TRUE);
-            _endswitch.Update(signal := FALSE, valid := TRUE);
+            _endswitch.Update(signal := TRUE);
+            _endswitch.Update(signal := FALSE);
 
             // Step 3: Verify that the PositionError is returned.
             Equal(expected := SuperVisionError#PositionError, actual := _endswitch.GetError());
+        END_METHOD
+
+        {Test}
+        // Tests the Evaluating state for SuperVisionMode#Reaction.
+        METHOD PUBLIC Test_Evaluating_State_Reaction
+            // Step 1: Enable Reaction supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Reaction);
+
+            // Step 2: Simulate the condition where the target position is not yet reached.
+            _endswitch.Update(signal := FALSE);
+
+            // Step 3: Verify that the Evaluating state is returned.
+            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+        END_METHOD
+
+        {Test}
+        // Tests the Evaluating state for SuperVisionMode#Action.
+        METHOD PUBLIC Test_Evaluating_State_Action
+            // Step 1: Enable Action supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#Action);
+
+            // Step 2: Simulate the condition where no action has occurred yet.
+            _endswitch.Update(signal := TRUE);
+
+            // Step 3: Verify that the Evaluating state is returned.
+            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+        END_METHOD
+
+        {Test}
+        // Tests the Evaluating state for SuperVisionMode#PositionControl.
+        METHOD PUBLIC Test_Evaluating_State_PositionControl
+            // Step 1: Enable PositionControl supervision mode.
+            _endswitch.EnableSupervision(Mode := SuperVisionMode#PositionControl);
+
+            // Step 2: Simulate the condition where no unexpected position change has occurred yet.
+            _endswitch.Update(signal := TRUE);
+
+            // Step 3: Verify that the Evaluating state is returned.
+            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
         END_METHOD
     END_CLASS
 

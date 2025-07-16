@@ -86,7 +86,7 @@ NAMESPACE Simatic.Ax.Actuators
                     Check := _errorState;
                 SuperVisionMode#Reaction:
                     _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
-                    Check := SuperVisionError#None;                    
+                    Check := SuperVisionError#Evaluating;                    
                     IF (_hasReached) THEN
                         _monTimer(signal := FALSE);
                         Check := SuperVisionError#None;
@@ -100,6 +100,7 @@ NAMESPACE Simatic.Ax.Actuators
                         Check := SuperVisionError#ReactionError;
                     END_IF;
                 SuperVisionMode#Action:
+                    Check := SuperVisionError#Evaluating;
                     _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
                     IF (_hasLeft) THEN
                         _monTimer(signal := FALSE);
@@ -115,8 +116,8 @@ NAMESPACE Simatic.Ax.Actuators
                         Check := SuperVisionError#ActionError;
                     END_IF;
                 SuperVisionMode#PositionControl:
+                    Check := SuperVisionError#Evaluating;
                     _monTimer(signal := FALSE);
-                    Check := SuperVisionError#None;
                     IF _hasReached OR _hasLeft THEN
                         _Alarm.errorMessage := 'Unexpected position change detected (Position Error)';
                         THIS.Notify(e := _Alarm);
@@ -140,6 +141,7 @@ NAMESPACE Simatic.Ax.Actuators
                 /// The supervision mode to enable.
                 Mode : SuperVisionMode;
             END_VAR
+            _errorState := SuperVisionError#None;
             _superVisionMode := Mode;
             _monTimer(signal := FALSE);
         END_METHOD
