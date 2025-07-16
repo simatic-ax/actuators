@@ -17,7 +17,8 @@ NAMESPACE Simatic.Ax.Actuators
             _binSignalWorkPos2Null : NullEndswitch;
             _outSignalWhenNull : NullPositionControl;
         END_VAR
-
+        
+        // Initializes the actuator. This method is called during the setup phase.
         METHOD PROTECTED OVERRIDE InitActuator
             IF (I_InWorkPosition2 = NULL) THEN
                 I_InWorkPosition2 := _binSignalWorkPos2Null;
@@ -29,6 +30,7 @@ NAMESPACE Simatic.Ax.Actuators
             END_IF;
         END_METHOD
 
+        // Executes the actuator logic based on its current state and sensor inputs.
         METHOD PROTECTED OVERRIDE ExecuteActuator
             VAR_TEMP
                 _isInHomePos, _isInWorkPos, _isInWorkPos2 : BOOL;
@@ -61,7 +63,7 @@ NAMESPACE Simatic.Ax.Actuators
                         ; // Error
                     END_IF;
                 //##############################################
-                // InHomePosition
+                // InHomePosition: Hold the home position.
                 //##############################################
                 ActuatorState#InHomePosition:
                     Q_ToHomePosition.Hold();
@@ -91,7 +93,7 @@ NAMESPACE Simatic.Ax.Actuators
                     END_IF;
 
                 //##############################################
-                // InWorkPosition
+                // InWorkPosition: Hold the work position.
                 //##############################################
                 // ### Actuator is in Workposition 1
                 ActuatorState#InWorkPosition:
@@ -118,7 +120,7 @@ NAMESPACE Simatic.Ax.Actuators
                         I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#Action);
                     END_IF;                    
                 //##############################################
-                // InWorkPosition2
+                // InWorkPosition2: Hold the work position.
                 //##############################################
                 // ### Actuator is in Workposition 2 
                 ActuatorState#InWorkPosition2:
@@ -144,6 +146,9 @@ NAMESPACE Simatic.Ax.Actuators
                         I_InWorkPosition2.EnableSupervision(Mode := SuperVisionMode#None);
                         I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Action);
                     END_IF;
+                //##############################################
+                // Error: Handle error state.
+                //##############################################
                 ActuatorState#Error:
                     Q_ToHomePosition.Reset();
                     Q_ToWorkPosition.Reset();

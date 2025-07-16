@@ -4,7 +4,7 @@ NAMESPACE Simatic.Ax.Actuators
     CLASS Actuator2Way
         EXTENDS ActuatorBase
         VAR PUBLIC
-            // Public variables can be declared here if needed.
+        // Public variables can be declared here if needed.
         END_VAR
 
         // Initializes the actuator. This method is called during the setup phase.

@@ -4,6 +4,11 @@ NAMESPACE Simatic.Ax.Actuators
     END_TYPE
 
     TYPE
-        SuperVisionError : WORD (None := WORD#16#0000, PositionError := WORD#16#0001, ActionError := WORD#16#0002, ResponseError := WORD#16#0003) := None;
+        /// Represents different types of supervision errors that can occur in the system.
+        /// None: No error has occurred.
+        /// PositionError: Indicates an unexpected change in the actuator's position.
+        /// ActionError: Indicates that no action occurred after initiating a command, such as MoveToWorkPosition, and the current position was not left.
+        /// ReactionError: Indicates that the target position was not reached, despite the command being executed.
+        SuperVisionError : WORD (None := WORD#16#0000, PositionError := WORD#16#0001, ActionError := WORD#16#0002, ReactionError := WORD#16#0003) := None;
     END_TYPE
 END_NAMESPACE
