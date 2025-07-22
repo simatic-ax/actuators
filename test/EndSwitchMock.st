@@ -31,7 +31,7 @@ NAMESPACE Simatic.Ax.Actuators
             TimeHasElapsed := FALSE;
         END_METHOD
     
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -65,7 +65,7 @@ NAMESPACE Simatic.Ax.Actuators
             TimeHasElapsed := FALSE;
         END_METHOD
     
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -100,7 +100,7 @@ NAMESPACE Simatic.Ax.Actuators
             TimeHasElapsed := FALSE;
         END_METHOD
     
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -139,7 +139,7 @@ NAMESPACE Simatic.Ax.Actuators
             TimeHasElapsed := FALSE;
         END_METHOD
     
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS

@@ -24,7 +24,7 @@ NAMESPACE Simatic.Ax.Actuators
         END_METHOD
 
         // Returns the error status of the endswitch 
-        METHOD GetError : SuperVisionError
+        METHOD GetError : SuperVisionState
         END_METHOD
 
         // Checks if the monitoring time has elapsed.

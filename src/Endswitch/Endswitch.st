@@ -12,10 +12,10 @@ NAMESPACE Simatic.Ax.Actuators
             Behavior : EndswitchBehavior;
 
             /// Supervision time for action errors.
-            SuperVisionTimeAction : LTIME := T#5s;
+            SuperVisionTimeAction : LTIME := T#1s;
 
             /// Supervision time for reaction errors.
-            SuperVisionTimeReaction : LTIME := T#1s;
+            SuperVisionTimeReaction : LTIME := T#5s;
         END_VAR
         
         VAR
@@ -26,7 +26,7 @@ NAMESPACE Simatic.Ax.Actuators
             _monTimer : Ondelay;
 
             /// Current error state of the endswitch.
-            _errorState : SuperVisionError;
+            _errorState : SuperVisionState;
 
             /// Current supervision mode of the endswitch.
             _superVisionMode : SuperVisionMode;
@@ -39,12 +39,14 @@ NAMESPACE Simatic.Ax.Actuators
 
             /// Indicates if the endswitch has been reached.
             _hasReached : BOOL;
-
+            _isActivated : BOOL;
             /// Alarm object for reporting errors.
             _Alarm : Alarm := (id := '4711', errorMessage := 'Endswitch fault');
 
             /// Counter for the number of errors detected.
             _count : INT;
+            _actionCounter : DINT;
+            _hasReachedCounter : DINT;
         END_VAR
 
         /// Reads the cyclic signal and updates the internal state of the endswitch.
@@ -66,6 +68,7 @@ NAMESPACE Simatic.Ax.Actuators
 
             _binSignal.invert := Behavior = EndswitchBehavior#NormallyClosed;
             _binSignal.ReadCyclic(signal := signal, valid := valid, default := default);
+            _isActivated := _binSignal.Q();
             _hasLeft := _binSignal.QFal();
             _hasReached := _binSignal.QRis();
             _monTimer();
@@ -78,51 +81,48 @@ NAMESPACE Simatic.Ax.Actuators
         /// - PositionError: The actuator's position changed unexpectedly.
         /// - ActionError: No action occurred after initiating a command, and the current position was not left.
         /// - ReactionError: The target position was not reached despite the command being executed.
-        METHOD PRIVATE Check : SuperVisionError
-            
+        METHOD PRIVATE Check : SuperVisionState
             CASE _superVisionMode OF
                 SuperVisionMode#None:
                     _monTimer(signal := FALSE);
                     Check := _errorState;
                 SuperVisionMode#Reaction:
-                    _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
-                    Check := SuperVisionError#Evaluating;                    
+                    Check := SuperVisionState#EvaluatingRecaction;                    
                     IF (_hasReached) THEN
-                        _monTimer(signal := FALSE);
-                        Check := SuperVisionError#None;
+                        _hasReachedCounter := _hasReachedCounter + 1;
+                        _superVisionMode := SuperVisionMode#None;
                     END_IF;
                     // Error 
                     IF _monTimer.output THEN
                         _Alarm.errorMessage := 'Target position not reached (Reaction Error)';
                         THIS.Notify(e := _Alarm);
                         _count := _count + 1;
-                        _monTimer(signal := FALSE);
-                        Check := SuperVisionError#ReactionError;
+                        Check := SuperVisionState#ReactionError;
+                        _superVisionMode := SuperVisionMode#None;
                     END_IF;
                 SuperVisionMode#Action:
-                    Check := SuperVisionError#Evaluating;
-                    _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
+                    _actionCounter := _actionCounter + 1;
+                    Check := SuperVisionState#EvaluatingAction;
                     IF (_hasLeft) THEN
-                        _monTimer(signal := FALSE);
-                        Check := SuperVisionError#None;
+                        _superVisionMode := SuperVisionMode#None;
                     END_IF;
-
                     // Error 
                     IF _monTimer.output THEN
                         _Alarm.errorMessage := 'No action occurred after command initiation (Action Error)';
                         THIS.Notify(e := _Alarm);
                         _count := _count + 1;
                         _monTimer(signal := FALSE);
-                        Check := SuperVisionError#ActionError;
+                        Check := SuperVisionState#ActionError;
+                        _superVisionMode := SuperVisionMode#None;
                     END_IF;
                 SuperVisionMode#PositionControl:
-                    Check := SuperVisionError#Evaluating;
-                    _monTimer(signal := FALSE);
+                    Check := SuperVisionState#EvaluatingPosition;
                     IF _hasReached OR _hasLeft THEN
                         _Alarm.errorMessage := 'Unexpected position change detected (Position Error)';
                         THIS.Notify(e := _Alarm);
                         _count := _count + 1;
-                        Check := SuperVisionError#PositionError;
+                        _superVisionMode := SuperVisionMode#None;
+                        Check := SuperVisionState#PositionError;
                     END_IF;
             END_CASE;
             ;
@@ -131,7 +131,7 @@ NAMESPACE Simatic.Ax.Actuators
         /// Returns the error status of the endswitch.
         /// Input: None.
         /// Returns: The current supervision error state of the endswitch.
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             GetError := _errorState;
         END_METHOD
 
@@ -141,8 +141,19 @@ NAMESPACE Simatic.Ax.Actuators
                 /// The supervision mode to enable.
                 Mode : SuperVisionMode;
             END_VAR
-            _errorState := SuperVisionError#None;
+            _errorState := SuperVisionState#None;
             _superVisionMode := Mode;
+            _monTimer(signal := FALSE);
+            CASE _superVisionMode OF
+                SuperVisionMode#Reaction:
+                    _monTimer(signal := TRUE, duration := SuperVisionTimeReaction);
+                SuperVisionMode#Action:
+                    _monTimer(signal := TRUE, duration := SuperVisionTimeAction);
+                SuperVisionMode#PositionControl:
+                    ;
+                ELSE;
+                    ;
+            END_CASE;
             _monTimer(signal := FALSE);
         END_METHOD
 
