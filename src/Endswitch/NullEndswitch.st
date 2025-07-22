@@ -31,9 +31,9 @@ NAMESPACE Simatic.Ax.Actuators
         METHOD PRIVATE Check : SuperVisionState
             CASE _superVisionMode OF
                 SuperVisionMode#None:
-                    _monTimer(signal := FALSE);
                     Check := _errorState;
                 SuperVisionMode#Reaction:
+                    _monTimer(signal := TRUE, duration := MonitoringTime);
                     Check := SuperVisionState#EvaluatingRecaction;
                     IF (_hasReached) THEN
                         _superVisionMode := SuperVisionMode#None;
