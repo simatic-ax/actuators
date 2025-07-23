@@ -1,6 +1,25 @@
+USING Simatic.Ax;
 USING AxUnit.Assert;
 USING AxUnit.ResultFunctions;
 USING System.Strings;
+USING Simatic.Ax.Mocks;
+USING AxUnit.Mocking;
+
+NAMESPACE Simatic.Ax.Test
+
+    {TestFixture}
+    CLASS TestEndswitch
+
+        VAR PROTECTED
+            //o : <test instance>; //your test instance
+        END_VAR
+    
+        METHOD PUBLIC MyMethod
+             // write your test code here
+            ;
+        END_METHOD
+    END_CLASS
+END_NAMESPACE
 NAMESPACE Simatic.Ax.Actuators
 
     {TestFixture}
