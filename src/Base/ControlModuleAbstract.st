@@ -1,4 +1,5 @@
 USING NotificationService.Interfaces;
+USING NotificationService.Interfaces;
 USING Simatic.Ax.Actuators;
 USING Simatic.Ax.Commands;
 USING NotificationService.ErrorHandling;
@@ -74,40 +75,22 @@ NAMESPACE Simatic.Ax.AutomationFramework
             ELSE
                 t.source := Concat(_name, '.', e.source);
             END_IF;
-            _notificationService.RegisterAlarm(THIS, t);
+            IF (_notificationService <> NULL) THEN
+                _notificationService.RegisterAlarm(THIS, t);
+            END_IF;
             THIS.OnNotification();
             Notify := TRUE;
         END_METHOD
     
         METHOD PUBLIC OnNotification ; END_METHOD
     
-        // // concatenation of bools incorrect
-        // METHOD PUBLIC Notify : BOOL
-        //     VAR_INPUT
-        //         errors : ARRAY[*] OF Alarm;
-        //     END_VAR
-        //     VAR_TEMP
-        //         i, j : DINT := 0;
-        //         result : BOOL := FALSE;
-        //     END_VAR
-        //     i := LOWER_BOUND(errors, 1);
-        //     j := UPPER_BOUND(errors, 1);
-    
-        //     FOR i := LOWER_BOUND(errors, 1) TO UPPER_BOUND(errors, 1) DO
-        //         result := _notificationService.RegisterAlarm(THIS, errors[i]);  
-        //     END_FOR;
-    
-        //     THIS.OnNotification();
-            
-        //     Notify := result;
-        // END_METHOD
-    
+
         METHOD PUBLIC Equals : BOOL
             VAR_INPUT
                 other : IComparable;
             END_VAR
             VAR
-                i : REF_TO ErrorProviderBase;
+                i : IAlarmProvider;
             END_VAR
             IF other = NULL THEN
                 Equals := FALSE;
@@ -120,12 +103,17 @@ NAMESPACE Simatic.Ax.AutomationFramework
                 RETURN;
             END_IF;
     
-            IF i^._id <> _id THEN
+            IF i.GetId() <> _id THEN
                 Equals := FALSE;
                 RETURN;
             END_IF;
             Equals := TRUE;
     
+        END_METHOD
+
+        METHOD PUBLIC GetId : STRING
+            GetId := _id;
+            ;
         END_METHOD
     END_CLASS
 

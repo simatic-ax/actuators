@@ -16,6 +16,7 @@ NAMESPACE Simatic.Ax.Actuators
             _ActualPosition : INT;
             _binSignalWorkPos2Null : NullEndswitch;
             _outSignalWhenNull : NullPositionControl;
+            _toWorkPos2counter : DINT;
         END_VAR
         
         // Initializes the actuator. This method is called during the setup phase.
@@ -75,6 +76,7 @@ NAMESPACE Simatic.Ax.Actuators
                 ActuatorState#MoveToWorkPosition:
                     // On Enter state 
                     IF (THIS.StateHasChanged()) THEN
+                        _toWorkPoscounter := _toWorkPoscounter + 1;
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Set();
                         Q_ToWorkPosition2.Reset();
@@ -112,6 +114,7 @@ NAMESPACE Simatic.Ax.Actuators
                         THIS.ChangeState(ActuatorState#InWorkPosition2);
                     END_IF;
                     IF (THIS.StateHasChanged()) THEN
+                        _toWorkPos2counter := _toWorkPos2counter + 1;
                         Q_ToHomePosition.Reset();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Set();
@@ -139,6 +142,7 @@ NAMESPACE Simatic.Ax.Actuators
                         THIS.ChangeState(ActuatorState#InHomePosition);
                     END_IF;
                     IF (THIS.StateHasChanged()) THEN
+                        _toHomePoscounter := _toHomePoscounter + 1;
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         Q_ToWorkPosition2.Reset();
@@ -150,6 +154,7 @@ NAMESPACE Simatic.Ax.Actuators
                 // Error: Handle error state.
                 //##############################################
                 ActuatorState#Error:
+                    _errorCounter := _errorCounter + 1;
                     Q_ToHomePosition.Reset();
                     Q_ToWorkPosition.Reset();
                     Q_ToWorkPosition2.Reset();
@@ -171,6 +176,7 @@ NAMESPACE Simatic.Ax.Actuators
     
         METHOD PUBLIC OVERRIDE OnNotification
             // Read Error States of Endswitch
+            _notificationCounter := _notificationCounter + 1;
             I_InHomePosition.GetError();
             I_InWorkPosition.GetError();
             THIS.SetError(WORD#16#8201); 

@@ -78,19 +78,19 @@ NAMESPACE Simatic.Ax.Actuators
             // Test enabling supervision with different modes
             mode := SuperVisionMode#None;
             _endswitch.EnableSupervision(Mode := mode);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#Reaction;
             _endswitch.EnableSupervision(Mode := mode);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#Action;
             _endswitch.EnableSupervision(Mode := mode);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#PositionControl;
             _endswitch.EnableSupervision(Mode := mode);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
         END_METHOD
 
         {Test}
@@ -131,19 +131,19 @@ NAMESPACE Simatic.Ax.Actuators
             // Test getting error states
             mode := SuperVisionMode#None;
             _endswitch.EnableSupervision(Mode := mode);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#Reaction;
             _endswitch.EnableSupervision(Mode := mode);
             _endswitch.Update(signal := FALSE);
             _endswitch.Update(signal := TRUE);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
 
             mode := SuperVisionMode#Action;
             _endswitch.EnableSupervision(Mode := mode);
             _endswitch.Update(signal := TRUE);
             _endswitch.Update(signal := FALSE);
-            EqualSuperVisionError(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            EqualSuperVisionError(expected := SuperVisionState#None, actual := _endswitch.GetError());
         END_METHOD
 
         {Test}
@@ -160,13 +160,13 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE);
 
             // Step 4: Verify that the no error is returned.
-            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#EvaluatingRecaction, actual := _endswitch.GetError());
 
             // Step 5: Simulate the condition where the target position is reached.
             _endswitch.Update(signal := TRUE);
             
             // Step 6: Verify that the no error is returned.
-            Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#None, actual := _endswitch.GetError());
         END_METHOD
 
 
@@ -189,7 +189,7 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE);
 
             // Step 6: Verify that the ReactionError is returned.
-            Equal(expected := SuperVisionError#ReactionError, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#ReactionError, actual := _endswitch.GetError());
         END_METHOD
 
 
@@ -207,13 +207,13 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := TRUE);
 
             // Step 4: Verify that the no error is returned.
-            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#EvaluatingAction, actual := _endswitch.GetError());
 
             // Step 5: Simulate the condition where the target position is reached.
             _endswitch.Update(signal := FALSE);
 
             // Step 6: Verify that the no error is returned.
-            Equal(expected := SuperVisionError#None, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#None, actual := _endswitch.GetError());
             
         END_METHOD
 
@@ -237,7 +237,7 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE);
 
             // Step 6: Verify that the ReactionError is returned.
-            Equal(expected := SuperVisionError#ActionError, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#ActionError, actual := _endswitch.GetError());
         END_METHOD
 
 
@@ -252,7 +252,7 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE);
 
             // Step 3: Verify that the PositionError is returned.
-            Equal(expected := SuperVisionError#PositionError, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#PositionError, actual := _endswitch.GetError());
         END_METHOD
 
         {Test}
@@ -265,7 +265,7 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := FALSE);
 
             // Step 3: Verify that the Evaluating state is returned.
-            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#EvaluatingRecaction, actual := _endswitch.GetError());
         END_METHOD
 
         {Test}
@@ -278,7 +278,7 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := TRUE);
 
             // Step 3: Verify that the Evaluating state is returned.
-            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#EvaluatingAction, actual := _endswitch.GetError());
         END_METHOD
 
         {Test}
@@ -291,15 +291,15 @@ NAMESPACE Simatic.Ax.Actuators
             _endswitch.Update(signal := TRUE);
 
             // Step 3: Verify that the Evaluating state is returned.
-            Equal(expected := SuperVisionError#Evaluating, actual := _endswitch.GetError());
+            Equal(expected := SuperVisionState#EvaluatingPosition, actual := _endswitch.GetError());
         END_METHOD
     END_CLASS
 
 
     FUNCTION EqualSuperVisionError
         VAR_INPUT
-            expected : SuperVisionError;
-            actual : SuperVisionError;
+            expected : SuperVisionState;
+            actual : SuperVisionState;
             messageOnFail : STRING;
             {CallerFilePath}
             file : WSTRING[1024];
@@ -320,15 +320,15 @@ NAMESPACE Simatic.Ax.Actuators
 
     FUNCTION ToStringSuperVisionError : STRING
         VAR_INPUT
-            val : SuperVisionError;
+            val : SuperVisionState;
         END_VAR
-        IF val = SuperVisionError#None THEN
+        IF val = SuperVisionState#None THEN
             ToStringSuperVisionError := 'None';
-        ELSIF val = SuperVisionError#PositionError THEN
+        ELSIF val = SuperVisionState#PositionError THEN
             ToStringSuperVisionError := 'PositionControl';
-        ELSIF val = SuperVisionError#ActionError THEN
+        ELSIF val = SuperVisionState#ActionError THEN
             ToStringSuperVisionError := 'Action';
-        ELSIF val = SuperVisionError#ReactionError THEN
+        ELSIF val = SuperVisionState#ReactionError THEN
             ToStringSuperVisionError := 'Reaction';
         ELSE
             ToStringSuperVisionError := 'Unknown';
