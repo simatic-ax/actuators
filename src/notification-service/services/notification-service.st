@@ -122,7 +122,7 @@ NAMESPACE NotificationService
             END_VAR
             VAR
                 i : INT;
-                parentFound : BOOL;
+                foundChild : BOOL;
             END_VAR
     
             RegisterAlarm := FALSE;
@@ -133,6 +133,8 @@ NAMESPACE NotificationService
                 RETURN;
             END_IF;
     
+
+            foundChild := FALSE;
             // locate the childs index first
             // a child may have been associated to multiple parents for notification
             FOR i := LOW_ARR_BOUND TO UP_ARR_BOUND DO
@@ -140,13 +142,27 @@ NAMESPACE NotificationService
                     IF _componentHierarchy[i].child.Equals(source) THEN
                         _componentHierarchy[i].parent.Notify(componentAlarm);
                         RegisterAlarm := TRUE;
-                    ELSE
-                        // we've reached the root -> we may now assemble and store the final message
-                        _errorLogger.Log(componentAlarm);
-                        ;
+                        foundChild := TRUE;
                     END_IF;
                 END_IF;
             END_FOR;
+            IF NOT foundChild THEN
+                _errorLogger.Log(componentAlarm);
+            END_IF;
+            // // locate the childs index first
+            // // a child may have been associated to multiple parents for notification
+            // FOR i := LOW_ARR_BOUND TO UP_ARR_BOUND DO
+            //     IF _componentHierarchy[i].child <> NULL THEN
+            //         IF _componentHierarchy[i].child.Equals(source) THEN
+            //             _componentHierarchy[i].parent.Notify(componentAlarm);
+            //             RegisterAlarm := TRUE;
+            //         ELSE
+            //             // we've reached the root -> we may now assemble and store the final message
+            //             _errorLogger.Log(componentAlarm);
+            //             ;
+            //         END_IF;
+            //     END_IF;
+            // END_FOR;
         END_METHOD
     
         METHOD PUBLIC ClearHierarchy

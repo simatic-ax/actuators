@@ -44,8 +44,8 @@ NAMESPACE Simatic.Ax.Actuators
             _Alarm : Alarm := (id := '4711', errorMessage := 'Endswitch fault');
 
             /// Counter for the number of errors detected.
-            _count : INT;
-            _actionCounter : DINT;
+            _errorCount : DINT;
+            _hasLeftCounter : DINT;
             _hasReachedCounter : DINT;
         END_VAR
 
@@ -87,7 +87,7 @@ NAMESPACE Simatic.Ax.Actuators
                     _monTimer(signal := FALSE);
                     Check := _errorState;
                 SuperVisionMode#Reaction:
-                    Check := SuperVisionState#EvaluatingRecaction;                    
+                    Check := SuperVisionState#EvaluatingRecaction;        
                     IF (_hasReached) THEN
                         _hasReachedCounter := _hasReachedCounter + 1;
                         _superVisionMode := SuperVisionMode#None;
@@ -96,21 +96,21 @@ NAMESPACE Simatic.Ax.Actuators
                     IF _monTimer.output THEN
                         _Alarm.errorMessage := 'Target position not reached (Reaction Error)';
                         THIS.Notify(e := _Alarm);
-                        _count := _count + 1;
+                        _errorCount := _errorCount + 1;
                         Check := SuperVisionState#ReactionError;
                         _superVisionMode := SuperVisionMode#None;
                     END_IF;
-                SuperVisionMode#Action:
-                    _actionCounter := _actionCounter + 1;
+                SuperVisionMode#Action:       
                     Check := SuperVisionState#EvaluatingAction;
                     IF (_hasLeft) THEN
+                        _hasLeftCounter := _hasLeftCounter + 1;
                         _superVisionMode := SuperVisionMode#None;
                     END_IF;
                     // Error 
                     IF _monTimer.output THEN
                         _Alarm.errorMessage := 'No action occurred after command initiation (Action Error)';
                         THIS.Notify(e := _Alarm);
-                        _count := _count + 1;
+                        _errorCount := _errorCount + 1;
                         _monTimer(signal := FALSE);
                         Check := SuperVisionState#ActionError;
                         _superVisionMode := SuperVisionMode#None;
@@ -120,7 +120,7 @@ NAMESPACE Simatic.Ax.Actuators
                     IF _hasReached OR _hasLeft THEN
                         _Alarm.errorMessage := 'Unexpected position change detected (Position Error)';
                         THIS.Notify(e := _Alarm);
-                        _count := _count + 1;
+                        _errorCount := _errorCount + 1;
                         _superVisionMode := SuperVisionMode#None;
                         Check := SuperVisionState#PositionError;
                     END_IF;
@@ -154,7 +154,6 @@ NAMESPACE Simatic.Ax.Actuators
                 ELSE;
                     ;
             END_CASE;
-            _monTimer(signal := FALSE);
         END_METHOD
 
         /// Checks if the monitoring time has elapsed.

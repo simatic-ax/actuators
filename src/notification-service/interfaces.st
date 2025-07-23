@@ -25,7 +25,9 @@ NAMESPACE NotificationService.Interfaces
     END_METHOD
 
     METHOD OnNotification END_METHOD
-    END_INTERFACE
+
+    METHOD GetId : STRING END_METHOD
+    END_INTERFACE    
 
     INTERFACE INotificationService
 

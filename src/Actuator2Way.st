@@ -58,6 +58,7 @@ NAMESPACE Simatic.Ax.Actuators
                 //##############################################
                 ActuatorState#MoveToWorkPosition:
                     IF THIS.StateHasChanged() THEN
+                        _toWorkPosCounter := _toWorkPosCounter + 1; 
                         Q_ToWorkPosition.Set();
                         Q_ToHomePosition.Reset();
                         I_InHomePosition.EnableSupervision(Mode := SuperVisionMode#Action);
@@ -83,6 +84,7 @@ NAMESPACE Simatic.Ax.Actuators
                 //##############################################
                 ActuatorState#MoveToHomePosition:
                     IF (THIS.StateHasChanged()) THEN
+                        _toHomePosCounter := _toHomePosCounter + 1; 
                         Q_ToHomePosition.Set();
                         Q_ToWorkPosition.Reset();
                         I_InWorkPosition.EnableSupervision(Mode := SuperVisionMode#Action);
@@ -100,6 +102,7 @@ NAMESPACE Simatic.Ax.Actuators
                 // Error: Handle error state.
                 //##############################################
                 ActuatorState#Error:
+                    _errorCounter := _errorCounter + 1;
                     Q_ToHomePosition.Reset();
                     Q_ToWorkPosition.Reset();
                     
@@ -108,6 +111,7 @@ NAMESPACE Simatic.Ax.Actuators
 
         METHOD PUBLIC OVERRIDE OnNotification
             // Read Error States of Endswitch
+            _notificationCounter := _notificationCounter + 1;
             I_InHomePosition.GetError();
             I_InWorkPosition.GetError();
             THIS.SetError(WORD#16#8201); 

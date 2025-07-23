@@ -19,6 +19,13 @@ NAMESPACE Simatic.Ax.Actuators
             TimeToHome : LTIME := T#5s;
         END_VAR
 
+        VAR PROTECTED
+            _toHomePosCounter : DINT;
+            _toWorkPoscounter : DINT;
+            _errorCounter : DINT;
+            _notificationCounter : DINT;
+        END_VAR
+
         // Private variables
         VAR PRIVATE
             _stateOld : ActuatorState;
