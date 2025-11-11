@@ -3,7 +3,7 @@ name: "@simatic-ax/actuators"
 version: 0.0.0-placeholder
 author: Siemens AG
 # Description will be displayed in the apax extension
-description: <add your description here, which will be shown in the apax extension>
+description: "Library providing classes, interfaces and types for controlling 2-way and 3-way actuators with end switches in industrial automation"
 type: lib
 #URL to the repository
 repository:
