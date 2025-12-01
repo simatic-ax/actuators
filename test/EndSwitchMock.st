@@ -52,7 +52,7 @@ NAMESPACE Simatic.Ax.Actuators
         /// Returns the error status of the endswitch.
         /// Input: None.
         /// Returns: Default supervision error state.
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -105,8 +105,8 @@ NAMESPACE Simatic.Ax.Actuators
     
         /// Returns the error status of the endswitch.
         /// Input: None.
-        /// Returns: Default supervision error state.
-        METHOD PUBLIC GetError : SuperVisionError
+        /// Returns: Default supervision error state.    
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -161,7 +161,7 @@ NAMESPACE Simatic.Ax.Actuators
         /// Returns the error status of the endswitch.
         /// Input: None.
         /// Returns: Default supervision error state.
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
@@ -223,7 +223,7 @@ NAMESPACE Simatic.Ax.Actuators
         /// Returns the error status of the endswitch.
         /// Input: None.
         /// Returns: Default supervision error state.
-        METHOD PUBLIC GetError : SuperVisionError
+        METHOD PUBLIC GetError : SuperVisionState
             ;
         END_METHOD
     END_CLASS
