@@ -3,7 +3,7 @@ name: "@simatic-ax/actuators"
 version: 0.0.0-placeholder
 author: Siemens AG
 # Description will be displayed in the apax extension
-description: <add your description here, which will be shown in the apax extension>
+description: "Library providing classes, interfaces and types for controlling 2-way and 3-way actuators with end switches in industrial automation"
 type: lib
 #URL to the repository
 repository:
@@ -19,16 +19,20 @@ registries:
   '@simatic-ax': 'https://npm.pkg.github.com/'
   
 # Dependencies
+publicKeys:
+  "@simatic-ax":
+    "v1": "3792a7e926775425ccdd29ceed8c368c3008b5b33d7d5550b3cb1f58093e1dff"
+    "v2": "7af3e394eb2b285a3d99ab8e1f745cc6db75704b30a80393339c721a92ffffd9"
 catalogs:
-  "@ax/simatic-ax": ^2504.0.0
+  "@ax/simatic-ax": ^2510.0.0
   
 devDependencies:
-  '@ax/sdk': ^2504.0.0
+  '@ax/sdk': ^2510.0.0
   "@simatic-ax/snippetscollection": ^1.0.0
 
 dependencies:
-  "@simatic-ax/io": ^9.0.0
-  "@simatic-ax/commands": ^3.0.0
+  "@simatic-ax/io": ^10.0.0
+  "@simatic-ax/commands": ^4.0.0
   "@ax/system-timer": ^10.0.24
 
 # Project variables
