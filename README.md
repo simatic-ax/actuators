@@ -2,7 +2,11 @@
 
 ## Description
 
-This library provides a set of classes, interfaces, and types for controlling actuators and end switches in industrial automation systems. It simplifies the implementation of control logic for high-bay warehouse systems or similar applications.
+This library provides a set of classes, interfaces, and types for controlling actuators in industrial automation systems. It simplifies the implementation of control logic for applications by following the PLC Open mechanisms, making it easy to use.
+
+The following actuators are available:
+- `Actuator2Way`: A 2-way actuator that moves between two positions: Home and Work1.
+- `Actuator3Way`: A 3-way actuator that moves between three positions: Home, Work1, and Work2.
 
 ## Getting started
 
